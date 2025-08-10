@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, BarChart3, Users, PenTool, Smartphone, Layout, Gauge, Send } from 'lucide-react';
+import { ChevronDown, ChevronRight, BarChart3, Users, PenTool, Layout, Gauge, Send, SearchCode } from 'lucide-react';
 import { Badge } from '@/components/atomic/badge';
 import { Button } from '@/components/atomic/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/atomic/collapsible';
@@ -36,13 +36,9 @@ const defaultMenuItems: MenuItem[] = [
     icon: <PenTool className="w-4 h-4" />,
     children: [
       { id: 'new-project', title: 'Create Project', icon: <Send className="w-4 h-4" />, href: '/project/new' },
-      { id: 'project-list', title: 'Project List', icon: <Users className="w-4 h-4" />, href: '/project/list' }
+      { id: 'project-list', title: 'Project List', icon: <Users className="w-4 h-4" />, href: '/project/list' },
+      { id: 'new-scan', title: 'Start Scan', icon: <SearchCode className="w-4 h-4" />, href: '/scan/start' },
     ]
-  },
-  {
-    id: 'reports',
-    title: 'Reports',
-    icon: <Smartphone className="w-4 h-4" />,
   },
   {
     id: 'users',
@@ -50,8 +46,8 @@ const defaultMenuItems: MenuItem[] = [
     icon: <Layout className="w-4 h-4" />,
     badge: { text: 'Hot', variant: 'hot' },
     children: [
-      { id: 'new-project', title: 'Create Users', icon: <BarChart3 className="w-4 h-4" />, href: '/users/newuser' },
-      { id: 'project-list', title: 'Users List', icon: <Users className="w-4 h-4" />, href: '/users/listuser' }
+      { id: 'new-project', title: 'Create Users', icon: <BarChart3 className="w-4 h-4" />, href: '/users/new' },
+      { id: 'project-list', title: 'Users List', icon: <Users className="w-4 h-4" />, href: '/users/list' }
     ]
   }
 ];

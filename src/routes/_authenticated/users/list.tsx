@@ -1,33 +1,32 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { GenericTable, type TableColumn } from '@/components/molecule/generic-table';
+import { useUsers } from '@/hooks/use-user';
 import { Button } from '@/components/atomic/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Eye } from 'lucide-react';
 import { useState } from 'react';
-import { formatTimestamp } from '@/utils/timestampFormater';
-import { useProjects } from '@/hooks/use-project';
-import type { ProjectDetails } from '@/types/project';
+import type { User } from '@/types/auth';
+import { RoleBadge } from '@/components/atomic/enum-badge';
 
-export const Route = createFileRoute('/_authenticated/project/list')({
+export const Route = createFileRoute('/_authenticated/users/list')({
   component: RouteComponent,
 });
 
 
 function RouteComponent() {
-  const navigate = useNavigate()
   const usersPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
 
   // For server-side pagination
-  const { data: projectResponse, isLoading, error } = useProjects({
+  const { data: usersResponse, isLoading, error } = useUsers({
     page: currentPage,
     limit: usersPerPage,
   });
 
-  const projects = projectResponse?.projects || [];
-  const totalProjects = projectResponse?.pagination.total || 0;
+  const users = usersResponse?.users || [];
+  const totalUsers = usersResponse?.pagination.total || 0;
 
   // Define table columns
-  const projectColumns: TableColumn<ProjectDetails>[] = [
+  const userColumns: TableColumn<User>[] = [
     {
       key: 'srNo',
       header: 'Sr No.',
@@ -36,31 +35,41 @@ function RouteComponent() {
     },
     {
       key: 'name',
-      header: 'Project Name',
+      header: 'Username',
       sortable: true
     },
     {
-      key: 'preset',
-      header: 'Preset'
+      key: 'email',
+      header: 'Email'
     },
     {
-      key: 'created_at',
-      header: 'Created At',
-      render: (project) => (
-        <p>{formatTimestamp(project.created_at)}</p>
+      key: 'role',
+      header: 'Role',
+      render: (user) => (
+        <RoleBadge role={user.role}/>
       )
     },
     {
       key: 'actions',
       header: 'Actions',
-      render: (project) => (
+      render: (user) => (
         <div className="flex space-x-2">
           <Button
             size="sm"
             variant="outline"
             onClick={(e) => {
               e.stopPropagation();
-              handleEdit(project);
+              handleView(user);
+            }}
+          >
+            <Eye className="w-4 h-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(user);
             }}
           >
             <Edit className="w-4 h-4" />
@@ -70,7 +79,7 @@ function RouteComponent() {
             variant="outline"
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete(project);
+              handleDelete(user);
             }}
             className="text-red-600 hover:text-red-700"
           >
@@ -82,23 +91,27 @@ function RouteComponent() {
     }
   ];
 
-  const handleEdit = (user: ProjectDetails) => {
-    navigate({from: '/project/list', to: `../${user.id}/edit`})
+  const handleView = (user: User) => {
+    console.log('View user:', user);
   };
 
-  const handleDelete = (user: ProjectDetails) => {
+  const handleEdit = (user: User) => {
+    console.log('Edit user:', user);
+  };
+
+  const handleDelete = (user: User) => {
     console.log('Delete user:', user);
   };
 
-  const handleRowClick = (user: ProjectDetails) => {
-    navigate({from: '/project/list', to: `../${user.id}`})
+  const handleRowClick = (user: User) => {
+    console.log('Row clicked:', user);
   };
 
   return (
     <GenericTable
-      data={projects}
-      columns={projectColumns}
-      title="Projects List"
+      data={users}
+      columns={userColumns}
+      title="User List"
       loading={isLoading}
       error={error?.message}
       pagination={{
@@ -107,10 +120,10 @@ function RouteComponent() {
         showInfo: true,
         showPageNumbers: true
       }}
-      totalItems={totalProjects}
+      totalItems={totalUsers}
       currentPage={currentPage}
       onPageChange={setCurrentPage}
-      emptyMessage="No projects found"
+      emptyMessage="No users found"
       onRowClick={handleRowClick}
       rowClassName={() => 
         `hover:bg-gray-50`

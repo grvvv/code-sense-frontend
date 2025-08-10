@@ -1,37 +1,39 @@
-import { Folder, Search, AlertTriangle, FileText, ArrowRight } from 'lucide-react';
+import type { StatCountDetails } from '@/types/dashboard';
+import { Folder, Search, AlertTriangle, FileText } from 'lucide-react';
 
-const cards = [
-  { 
-    title: 'Project', 
-    icon: <Folder size={28} className="text-[#bf0000]" />, 
-    description: 'Manage your projects',
-    count: '12',
-    accentColor: '#bf0000'
-  },
-  { 
-    title: 'Scans', 
-    icon: <Search size={28} className="text-[#bf0000]" />, 
-    description: 'Security scans & audits',
-    count: '847',
-    accentColor: '#bf0000'
-  },
-  { 
-    title: 'Findings', 
-    icon: <AlertTriangle size={28} className="text-[#bf0000]" />, 
-    description: 'Security vulnerabilities',
-    count: '23',
-    accentColor: '#bf0000'
-  },
-  { 
-    title: 'Report', 
-    icon: <FileText size={28} className="text-[#bf0000]" />, 
-    description: 'Generated reports',
-    count: '8',
-    accentColor: '#bf0000'
-  },
-];
+const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
+  
+  const cards = [
+    { 
+      title: 'Project', 
+      icon: <Folder size={28} className="text-[#bf0000]" />, 
+      description: 'Manage your projects',
+      count: data?.projects.toString(),
+      accentColor: '#bf0000'
+    },
+    { 
+      title: 'Scans', 
+      icon: <Search size={28} className="text-[#bf0000]" />, 
+      description: 'Security scans & audits',
+      count: data?.scans.toString(),
+      accentColor: '#bf0000'
+    },
+    { 
+      title: 'Findings', 
+      icon: <AlertTriangle size={28} className="text-[#bf0000]" />, 
+      description: 'Security vulnerabilities',
+      count: data?.findings.toString(),
+      accentColor: '#bf0000'
+    },
+    { 
+      title: 'Users', 
+      icon: <FileText size={28} className="text-[#bf0000]" />, 
+      description: 'All Users',
+      count: data?.users.toString(),
+      accentColor: '#bf0000'
+    },
+  ];
 
-const DashboardCards = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6 px-3 min-h-auto">
       {cards.map((card, index) => (

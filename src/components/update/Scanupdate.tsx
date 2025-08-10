@@ -1,52 +1,146 @@
-import { useState, useEffect } from 'react';
+import type { ScanDetails } from '@/types/scan';
+import { Clock, FileText, Shield, CheckCircle, AlertTriangle } from 'lucide-react';
 
-function Scanupdate() {
-  const [percentage, setPercentage] = useState(0);
-  const [currentPhase, setCurrentPhase] = useState('Initializing');
-  const [isComplete, setIsComplete] = useState(false);
+interface ScanUpdateProps {
+  scan?: ScanDetails;
+}
+
+function ScanUpdate({ scan }: ScanUpdateProps) {
+  // Default scan data for demo purposes
+  const defaultScan: ScanDetails = {
+    id: "6895a4aafd752429c18740bb",
+    project_id: "68874418e816acffbf7c7729",
+    scan_name: "HDBFS",
+    status: "in_progress",
+    created_at: "2025-08-08T07:18:02.223",
+    triggered_by: "68863cf8ee93d4964a00d585",
+    total_files: 353,
+    files_scanned: 2,
+    findings: 2,
+    end_time: null
+  };
 
   const phases = [
-    { name: 'Initializing', start: 0, end: 15 },
-    { name: 'Scanning System', start: 15, end: 40 },
-    { name: 'Analyzing Vulnerabilities', start: 40, end: 70 },
-    { name: 'Generating Report', start: 70, end: 90 },
-    { name: 'Finalizing Results', start: 90, end: 100 }
+    { name: 'Initializing Scan', start: 0, end: 5 },
+    { name: 'Scanning Files', start: 5, end: 80 },
+    { name: 'Analyzing Results', start: 80, end: 95 },
+    { name: 'Generating Report', start: 95, end: 100 }
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPercentage(prev => {
-        if (prev >= 100) {
-          setIsComplete(true);
-          clearInterval(interval);
-          return 100;
-        }
-        
-        // Update current phase based on percentage
-        const newPercentage = prev + Math.random() * 2; // Variable speed
-        const currentPhaseData = phases.find(phase => 
-          newPercentage >= phase.start && newPercentage < phase.end
-        );
-        
-        if (currentPhaseData && currentPhaseData.name !== currentPhase) {
-          setCurrentPhase(currentPhaseData.name);
-        }
-        
-        return Math.min(newPercentage, 100);
-      });
-    }, 150);
+  // Calculate percentage based on files scanned vs total files
+  const calculatePercentage = (scan: ScanDetails): number => {
+    if (scan.status === 'completed') return 100;
+    if (scan.status === 'failed' || scan.status === 'cancelled') return 0;
+    if (scan.total_files === 0) return 0;
+    
+    return Math.min((scan.files_scanned / scan.total_files) * 100, 99);
+  };
 
-    return () => clearInterval(interval);
-  }, [currentPhase]);
+  // Determine current phase based on percentage
+  const getCurrentPhase = (percentage: number): string => {
+    if (currentScan.status === 'completed') return 'Scan Complete';
+    if (currentScan.status === 'failed') return 'Scan Failed';
+    if (currentScan.status === 'cancelled') return 'Scan Cancelled';
+    if (currentScan.status === 'pending') return 'Waiting to Start';
+    
+    const phase = phases.find(p => percentage >= p.start && percentage < p.end);
+    return phase ? phase.name : 'Scanning Files';
+  };
 
-  const circumference = 2 * Math.PI * 90; // radius = 90
+  const currentScan = scan || defaultScan;
+  const percentage = calculatePercentage(currentScan);
+  const currentPhase = getCurrentPhase(percentage);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'text-green-600';
+      case 'failed':
+        return 'text-red-600';
+      case 'cancelled':
+        return 'text-yellow-600';
+      case 'in_progress':
+        return 'text-blue-600';
+      default:
+        return 'text-gray-600';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="w-5 h-5 text-green-500" />;
+      case 'failed':
+        return <AlertTriangle className="w-5 h-5 text-red-500" />;
+      case 'cancelled':
+        return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
+      case 'in_progress':
+        return <Shield className="w-5 h-5 text-blue-500 animate-spin" />;
+      default:
+        return <Clock className="w-5 h-5 text-gray-500" />;
+    }
+  };
+
+  const circumference = 2 * Math.PI * 90;
   const strokeDasharray = circumference;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
-      <div className="w-full text-center">
+    <div className="w-full">
+      {/* Scan Header */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{currentScan.scan_name}</h2>
+            <p className="text-sm text-gray-600">Scan ID: {currentScan.id}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {getStatusIcon(currentScan.status)}
+            <span className={`text-sm font-medium capitalize ${getStatusColor(currentScan.status)}`}>
+              {currentScan.status.replace('_', ' ')}
+            </span>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="text-center p-4 bg-blue-50 rounded-lg">
+            <FileText className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-blue-900">{currentScan.total_files}</div>
+            <div className="text-sm text-blue-600">Total Files</div>
+          </div>
+          <div className="text-center p-4 bg-green-50 rounded-lg">
+            <Shield className="w-8 h-8 text-green-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-green-900">{currentScan.files_scanned}</div>
+            <div className="text-sm text-green-600">Files Scanned</div>
+          </div>
+          <div className="text-center p-4 bg-orange-50 rounded-lg">
+            <AlertTriangle className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-orange-900">{currentScan.findings}</div>
+            <div className="text-sm text-orange-600">Findings</div>
+          </div>
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <Clock className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+            <div className="text-sm font-medium text-gray-900">Started</div>
+            <div className="text-xs text-gray-600">{formatDateTime(currentScan.created_at)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress Section */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="text-center">
           {/* Circular Progress */}
-          <div className="relative">
+          <div className="relative mb-6">
             <svg className="w-48 h-48 mx-auto transform -rotate-90" viewBox="0 0 200 200">
               {/* Background Circle */}
               <circle
@@ -62,24 +156,26 @@ function Scanupdate() {
                 cx="100"
                 cy="100"
                 r="90"
-                stroke="#bf0000"
+                stroke={currentScan.status === 'completed' ? '#10b981' : currentScan.status === 'failed' ? '#ef4444' : '#3b82f6'}
                 strokeWidth="8"
                 fill="none"
                 strokeLinecap="round"
                 strokeDasharray={strokeDasharray}
                 strokeDashoffset={strokeDashoffset}
-                className="transition-all duration-300 ease-out"
+                className="transition-all duration-500 ease-out"
               />
-              {/* Animated Dots */}
-              <circle cx="100" cy="10" r="3" fill="#bf0000" className="animate-pulse">
-                <animateTransform
-                  attributeName="transform"
-                  type="rotate"
-                  values="0 100 100;360 100 100"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-              </circle>
+              {/* Animated Dots - only show when in progress */}
+              {currentScan.status === 'in_progress' && (
+                <circle cx="100" cy="10" r="3" fill="#3b82f6" className="animate-pulse">
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    values="0 100 100;360 100 100"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              )}
             </svg>
             
             {/* Percentage Display */}
@@ -92,8 +188,43 @@ function Scanupdate() {
               </div>
             </div>
           </div>
+
+          {/* Current Phase */}
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{currentPhase}</h3>
+            {currentScan.status === 'in_progress' && (
+              <p className="text-sm text-gray-600 mb-4">
+                Processing {currentScan.files_scanned} of {currentScan.total_files} files
+              </p>
+            )}
+            {currentScan.status === 'completed' && (
+              <p className="text-sm text-green-600 mb-4">
+                Scan completed successfully at {currentScan.end_time ? formatDateTime(currentScan.end_time) : 'Unknown'}
+              </p>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+            <div 
+              className={`h-2 rounded-full transition-all duration-500 ease-out ${
+                currentScan.status === 'completed' ? 'bg-green-500' : 
+                currentScan.status === 'failed' ? 'bg-red-500' : 'bg-blue-500'
+              }`}
+              style={{ width: `${percentage}%` }}
+            ></div>
+          </div>
+
+          {/* ETA or completion time */}
+          {currentScan.status === 'in_progress' && currentScan.files_scanned > 0 && (
+            <div className="text-sm text-gray-600">
+              {currentScan.total_files - currentScan.files_scanned} files remaining
+            </div>
+          )}
+        </div>
       </div>
+    </div>
   );
 }
 
-export default Scanupdate;
+export default ScanUpdate;

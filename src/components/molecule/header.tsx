@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Search, Bell, Settings, User, ChevronDown, Menu, Sun, Moon, Globe, LogOut, UserCircle, Mail } from 'lucide-react';
+import { Bell, Settings, User, ChevronDown, Menu, Sun, Moon, LogOut, UserCircle, Mail } from 'lucide-react';
 import { Button } from '@/components/atomic/button';
-import { Input } from '@/components/atomic/input';
 import { Badge } from '@/components/atomic/badge';
 import {
   DropdownMenu,
@@ -11,12 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/atomic/dropdown-menu';
+import { useAuth } from '@/hooks/use-auth';
 
 interface HeaderProps {
   onMenuToggle?: () => void;
-  userName?: string;
-  userEmail?: string;
-  userAvatar?: string;
   notifications?: number;
   onSearch?: (query: string) => void;
   onProfileClick?: () => void;
@@ -26,17 +23,12 @@ interface HeaderProps {
 
 export default function Header({
   onMenuToggle,
-  userName = "John Doe",
-  userEmail = "john@example.com",
-  userAvatar,
   notifications = 5,
-  onSearch,
   onProfileClick,
   onSettingsClick,
-  onLogout
 }: HeaderProps) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const { logout, user } = useAuth()
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -56,45 +48,10 @@ export default function Header({
           <Menu className="w-5 h-5" />
         </Button>
 
-        {/* Search Bar */}
-        <div className="relative">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-brand-dark/60" />
-            <Input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && onSearch?.(searchQuery)}
-              className="pl-10 w-64 bg-white border-brand-dark/20 focus:border-brand-red text-brand-dark placeholder:text-brand-dark/60"
-            />
-          </div>
-        </div>
       </div>
 
       {/* Right Section */}
       <div className="flex items-center gap-2">
-        {/* Language Selector */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="text-brand-dark hover:bg-brand-dark/10">
-              <Globe className="w-5 h-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white border-brand-dark/20">
-            <DropdownMenuLabel className="text-brand-dark">Languages</DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-brand-dark/20" />
-            <DropdownMenuItem className="text-brand-dark hover:bg-brand-dark/10">
-              🇺🇸 English
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-brand-dark hover:bg-brand-dark/10">
-              🇪🇸 Spanish
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-brand-dark hover:bg-brand-dark/10">
-              🇫🇷 French
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         {/* Theme Toggle */}
         <Button
@@ -107,7 +64,7 @@ export default function Header({
         </Button>
 
         {/* Notifications */}
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="relative text-brand-dark hover:bg-brand-dark/10">
               <Bell className="w-5 h-5" />
@@ -145,38 +102,19 @@ export default function Header({
               </DropdownMenuItem>
             </div>
           </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Settings */}
-        <a href="/settings" className="inline-block">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-brand-dark hover:bg-brand-dark/10"
-            onClick={onSettingsClick}
-          >
-            <Settings className="w-5 h-5" />
-          </Button>
-        </a>
+        </DropdownMenu> */}
 
         {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2 text-brand-dark hover:bg-brand-dark/10">
-              {userAvatar ? (
-                <img 
-                  src={userAvatar} 
-                  alt={userName}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-brand-red rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-              )}
+              <div className="w-8 h-8 bg-brand-red rounded-full flex items-center justify-center">
+                <User className="w-4 h-4 text-white" />
+              </div>
+              
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-brand-dark">{userName}</p>
-                <p className="text-xs text-brand-dark/60">{userEmail}</p>
+                <p className="text-sm font-medium text-brand-dark capitalize">{user?.name}</p>
+                <p className="text-xs text-brand-dark/60 capitalize">{user?.role}</p>
               </div>
               <ChevronDown className="w-4 h-4 text-brand-dark/60" />
             </Button>
@@ -188,8 +126,8 @@ export default function Header({
                   <User className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{userName}</p>
-                  <p className="text-xs text-brand-dark/60">{userEmail}</p>
+                  <p className="text-sm font-medium capitalize">{user?.name}</p>
+                  <p className="text-xs text-brand-dark/60 capitalize">{user?.role}</p>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -222,7 +160,7 @@ export default function Header({
             <DropdownMenuSeparator className="bg-brand-dark/20" />
             <DropdownMenuItem 
               className="text-brand-red hover:bg-brand-red/10 cursor-pointer"
-              onClick={onLogout}
+              onClick={() => logout}
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sign out

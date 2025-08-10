@@ -21,7 +21,6 @@ import { Route as AuthenticatedUsersListRouteImport } from './routes/_authentica
 import { Route as AuthenticatedScanStartRouteImport } from './routes/_authenticated/scan/start'
 import { Route as AuthenticatedProjectNewRouteImport } from './routes/_authenticated/project/new'
 import { Route as AuthenticatedProjectListRouteImport } from './routes/_authenticated/project/list'
-import { Route as AuthenticatedFindingFindingIdRouteImport } from './routes/_authenticated/finding/$findingId'
 import { Route as AuthenticatedScanScanIdRouteRouteImport } from './routes/_authenticated/scan/$scanId/route'
 import { Route as AuthenticatedScanScanIdIndexRouteImport } from './routes/_authenticated/scan/$scanId/index'
 import { Route as AuthenticatedProjectProjectIdIndexRouteImport } from './routes/_authenticated/project/$projectId/index'
@@ -88,12 +87,6 @@ const AuthenticatedProjectListRoute =
     path: '/project/list',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedFindingFindingIdRoute =
-  AuthenticatedFindingFindingIdRouteImport.update({
-    id: '/finding/$findingId',
-    path: '/finding/$findingId',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedScanScanIdRouteRoute =
   AuthenticatedScanScanIdRouteRouteImport.update({
     id: '/scan/$scanId',
@@ -138,7 +131,6 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
   '/scan/$scanId': typeof AuthenticatedScanScanIdRouteRouteWithChildren
-  '/finding/$findingId': typeof AuthenticatedFindingFindingIdRoute
   '/project/list': typeof AuthenticatedProjectListRoute
   '/project/new': typeof AuthenticatedProjectNewRoute
   '/scan/start': typeof AuthenticatedScanStartRoute
@@ -156,7 +148,6 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
-  '/finding/$findingId': typeof AuthenticatedFindingFindingIdRoute
   '/project/list': typeof AuthenticatedProjectListRoute
   '/project/new': typeof AuthenticatedProjectNewRoute
   '/scan/start': typeof AuthenticatedScanStartRoute
@@ -178,7 +169,6 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/scan/$scanId': typeof AuthenticatedScanScanIdRouteRouteWithChildren
-  '/_authenticated/finding/$findingId': typeof AuthenticatedFindingFindingIdRoute
   '/_authenticated/project/list': typeof AuthenticatedProjectListRoute
   '/_authenticated/project/new': typeof AuthenticatedProjectNewRoute
   '/_authenticated/scan/start': typeof AuthenticatedScanStartRoute
@@ -199,7 +189,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/'
     | '/scan/$scanId'
-    | '/finding/$findingId'
     | '/project/list'
     | '/project/new'
     | '/scan/start'
@@ -217,7 +206,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/settings'
     | '/'
-    | '/finding/$findingId'
     | '/project/list'
     | '/project/new'
     | '/scan/start'
@@ -238,7 +226,6 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/'
     | '/_authenticated/scan/$scanId'
-    | '/_authenticated/finding/$findingId'
     | '/_authenticated/project/list'
     | '/_authenticated/project/new'
     | '/_authenticated/scan/start'
@@ -342,13 +329,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectListRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/finding/$findingId': {
-      id: '/_authenticated/finding/$findingId'
-      path: '/finding/$findingId'
-      fullPath: '/finding/$findingId'
-      preLoaderRoute: typeof AuthenticatedFindingFindingIdRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/scan/$scanId': {
       id: '/_authenticated/scan/$scanId'
       path: '/scan/$scanId'
@@ -428,7 +408,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedScanScanIdRouteRoute: typeof AuthenticatedScanScanIdRouteRouteWithChildren
-  AuthenticatedFindingFindingIdRoute: typeof AuthenticatedFindingFindingIdRoute
   AuthenticatedProjectListRoute: typeof AuthenticatedProjectListRoute
   AuthenticatedProjectNewRoute: typeof AuthenticatedProjectNewRoute
   AuthenticatedScanStartRoute: typeof AuthenticatedScanStartRoute
@@ -445,7 +424,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedScanScanIdRouteRoute:
     AuthenticatedScanScanIdRouteRouteWithChildren,
-  AuthenticatedFindingFindingIdRoute: AuthenticatedFindingFindingIdRoute,
   AuthenticatedProjectListRoute: AuthenticatedProjectListRoute,
   AuthenticatedProjectNewRoute: AuthenticatedProjectNewRoute,
   AuthenticatedScanStartRoute: AuthenticatedScanStartRoute,

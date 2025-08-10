@@ -1,13 +1,13 @@
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '../atomic/card'
 import { ShieldCheck } from "lucide-react";
-import Scanupdate from './Scanupdate'
+import ScanUpdate from './Scanupdate';
 
 function UpdatePage() {
   return (
     <div>
         <div className="grid grid-cols-2 gap-4 py-6">
             <Card className='shadow-lg border border-gray-200'>
-                <Scanupdate />
+                <ScanUpdate />
             </Card>
 
             <Card className="w-full rounded-2xl border border-gray-200 bg-white shadow-lg hover:shadow-xl transition-shadow">
