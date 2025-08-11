@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Bell, Settings, User, ChevronDown, Menu, Sun, Moon, LogOut, UserCircle, Mail } from 'lucide-react';
+import { Settings, User, ChevronDown, Menu, Sun, Moon, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/atomic/button';
-import { Badge } from '@/components/atomic/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +22,6 @@ interface HeaderProps {
 
 export default function Header({
   onMenuToggle,
-  notifications = 5,
   onProfileClick,
   onSettingsClick,
 }: HeaderProps) {
@@ -62,47 +60,6 @@ export default function Header({
         >
           {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </Button>
-
-        {/* Notifications */}
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="relative text-brand-dark hover:bg-brand-dark/10">
-              <Bell className="w-5 h-5" />
-              {notifications > 0 && (
-                <Badge className="absolute -top-1 -right-1 bg-brand-red text-white text-xs min-w-[18px] h-[18px] flex items-center justify-center p-0 rounded-full">
-                  {notifications > 9 ? '9+' : notifications}
-                </Badge>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 bg-white border-brand-dark/20">
-            <DropdownMenuLabel className="text-brand-dark flex items-center justify-between">
-              <span>Notifications</span>
-              <Badge className="bg-brand-red text-white">{notifications}</Badge>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-brand-dark/20" />
-            <div className="max-h-64 overflow-y-auto">
-              <DropdownMenuItem className="text-brand-dark hover:bg-brand-dark/10 flex items-start gap-3 p-4">
-                <div className="w-8 h-8 bg-brand-red rounded-full flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-brand-dark">New message received</p>
-                  <p className="text-xs text-brand-dark/60">2 minutes ago</p>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-brand-dark hover:bg-brand-dark/10 flex items-start gap-3 p-4">
-                <div className="w-8 h-8 bg-brand-red rounded-full flex items-center justify-center flex-shrink-0">
-                  <Settings className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-brand-dark">System update available</p>
-                  <p className="text-xs text-brand-dark/60">1 hour ago</p>
-                </div>
-              </DropdownMenuItem>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
 
         {/* User Profile */}
         <DropdownMenu>
@@ -160,7 +117,7 @@ export default function Header({
             <DropdownMenuSeparator className="bg-brand-dark/20" />
             <DropdownMenuItem 
               className="text-brand-red hover:bg-brand-red/10 cursor-pointer"
-              onClick={() => logout}
+              onClick={() => logout()}
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sign out

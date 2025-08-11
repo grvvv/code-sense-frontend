@@ -1,14 +1,24 @@
 import type { StatCountDetails } from '@/types/dashboard';
+import { Link } from '@tanstack/react-router';
 import { Folder, Search, AlertTriangle, FileText } from 'lucide-react';
 
 const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
   
   const cards = [
     { 
+      title: 'Users', 
+      icon: <FileText size={28} className="text-[#bf0000]" />, 
+      description: 'All Users',
+      count: data?.users.toString(),
+      href: "/users/list",
+      accentColor: '#bf0000'
+    },
+    { 
       title: 'Project', 
       icon: <Folder size={28} className="text-[#bf0000]" />, 
       description: 'Manage your projects',
       count: data?.projects.toString(),
+      href: "/project/list",
       accentColor: '#bf0000'
     },
     { 
@@ -25,19 +35,13 @@ const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
       count: data?.findings.toString(),
       accentColor: '#bf0000'
     },
-    { 
-      title: 'Users', 
-      icon: <FileText size={28} className="text-[#bf0000]" />, 
-      description: 'All Users',
-      count: data?.users.toString(),
-      accentColor: '#bf0000'
-    },
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6 px-3 min-h-auto">
       {cards.map((card, index) => (
-        <div
+        <Link
+          to={`${card.href}`}
           key={index}
           className={`
             relative group cursor-pointer
@@ -78,15 +82,19 @@ const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
               {card.description}
             </p>
               
-              <div className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors duration-300">
-                View all
-              </div>
+              {
+                card.href &&
+                <div className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors duration-300">
+                  View all
+                </div>
+              }
+              
             </div>
           </div>
           
           {/* Hover effect overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-50/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-        </div>
+        </Link>
       ))}
     </div>
   );

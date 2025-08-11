@@ -12,4 +12,5 @@ interface SystemStatus {
 export interface DashboardResponse {
   top_counts: StatCountDetails;
   system_status: SystemStatus;
+  findings_trend: object[]
 }

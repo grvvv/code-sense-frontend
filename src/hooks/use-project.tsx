@@ -32,6 +32,7 @@ export function useCreateProject() {
     onSuccess: () => {
       // Invalidate and refetch users list
       queryClient.invalidateQueries({ queryKey: ['projects', 'list'] });
+      queryClient.invalidateQueries({ queryKey: ['projects', 'names'] });
     },
     onError: (error) => {
       console.error('Failed to create user:', error);

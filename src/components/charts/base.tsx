@@ -1,30 +1,50 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, type TooltipProps,
 } from 'recharts';
 
-const openData = [
-  { date: 'Jun 1', high: 200, medium: 150, low: 50 },
-  { date: 'Jun 2', high: 180, medium: 120, low: 60 },
-  { date: 'Jun 3', high: 220, medium: 160, low: 70 },
-  { date: 'Jun 4', high: 190, medium: 140, low: 55 },
-  { date: 'Jun 5', high: 210, medium: 170, low: 65 },
-  { date: 'Jun 6', high: 185, medium: 135, low: 45 },
-  { date: 'Jun 7', high: 205, medium: 155, low: 75 },
-];
+// Type definitions
+interface FindingData {
+  date: string;
+  high: number;
+  medium: number;
+  low: number;
+}
 
-const closeData = [
-  { date: 'Jun 1', high: 150, medium: 130, low: 90 },
-  { date: 'Jun 2', high: 160, medium: 100, low: 80 },
-  { date: 'Jun 3', high: 140, medium: 120, low: 60 },
-  { date: 'Jun 4', high: 155, medium: 125, low: 85 },
-  { date: 'Jun 5', high: 165, medium: 115, low: 75 },
-  { date: 'Jun 6', high: 145, medium: 110, low: 70 },
-  { date: 'Jun 7', high: 170, medium: 135, low: 95 },
-];
+interface ChartData extends FindingData {
+  displayDate: string;
+}
+
+interface TooltipPayload {
+  dataKey: string;
+  value: number;
+  color: string;
+}
+
+// Props interface
+interface ChartComponentProps {
+  value?: FindingData[];
+}
+
+// Function to format date for display
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric' 
+  });
+};
+
+// Transform API data for chart display
+const transformDataForChart = (apiData: FindingData[]): ChartData[] => {
+  return apiData.map(item => ({
+    ...item,
+    displayDate: formatDate(item.date)
+  }));
+};
 
 // Custom tooltip component
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
@@ -40,41 +60,40 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const ChartComponent = () => {
-  const [view, setView] = useState('open');
-  const data = view === 'open' ? openData : closeData;
+const ChartComponent: React.FC<ChartComponentProps> = ({ value = [] }) => {
+  // Use the prop data, fallback to empty array if not provided
+  const findingsTrend = value;
+  // Transform the API data for display
+  const chartData = transformDataForChart(findingsTrend);
+  
+  // Calculate totals for stats from the latest data point
+  const latestData = findingsTrend[findingsTrend.length - 1];
+  const totalIssues = latestData ? latestData.high + latestData.medium + latestData.low : 0;
 
-  // Calculate totals for stats
-  const currentData = data[data.length - 1];
-  const totalIssues = currentData.high + currentData.medium + currentData.low;
+  // Handle empty data case
+  if (!findingsTrend || findingsTrend.length === 0) {
+    return (
+      <div className="w-full max-w-5xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="p-6">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">Security Findings Trend</h2>
+            <p className="text-sm text-gray-500">No data available</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
 
-      {/* Toggle Buttons */}
-      
+      {/* Header */}
       <div className="p-6 pb-4">
-        <div className="flex justify-center space-x-1 bg-gray-100 p-1 rounded-lg w-fit mx-auto">
-          <button
-            onClick={() => setView('open')}
-            className={`px-6 py-2 rounded-md font-medium transition-all duration-200 ${
-              view === 'open' 
-                ? 'bg-red-600 text-white shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-            }`}
-          >
-            Open
-          </button>
-          <button
-            onClick={() => setView('close')}
-            className={`px-6 py-2 rounded-md font-medium transition-all duration-200 ${
-              view === 'close' 
-                ? 'bg-red-600 text-white shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
-            }`}
-          >
-            Closed
-          </button>
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Security Findings Trend</h2>
+          <p className="text-sm text-gray-600">
+            Total Issues (Latest): <span className="font-medium text-red-600">{totalIssues}</span>
+          </p>
         </div>
       </div>
 
@@ -82,9 +101,9 @@ const ChartComponent = () => {
       <div className="px-6 pb-4">
         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
           <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <XAxis 
-                dataKey="date" 
+                dataKey="displayDate" 
                 stroke="#6b7280" 
                 fontSize={12}
                 tickLine={false}
@@ -124,10 +143,6 @@ const ChartComponent = () => {
             </div>
           </div>
 
-          {/* Action Button */}
-          <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm">
-            Export Report
-          </button>
         </div>
       </div>
     </div>
