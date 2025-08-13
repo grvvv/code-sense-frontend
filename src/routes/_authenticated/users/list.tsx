@@ -1,11 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { GenericTable, type TableColumn } from '@/components/molecule/generic-table';
-import { useUsers } from '@/hooks/use-user';
 import { Button } from '@/components/atomic/button';
-import { Edit, Trash2, Eye } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import type { User } from '@/types/auth';
 import { RoleBadge } from '@/components/atomic/enum-badge';
+import { useDeleteProfile, useUsers } from '@/hooks/use-user';
 
 export const Route = createFileRoute('/_authenticated/users/list')({
   component: RouteComponent,
@@ -15,12 +15,14 @@ export const Route = createFileRoute('/_authenticated/users/list')({
 function RouteComponent() {
   const usersPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate({ from: '/users/list' })
 
   // For server-side pagination
   const { data: usersResponse, isLoading, error } = useUsers({
     page: currentPage,
     limit: usersPerPage,
   });
+  const deleteUserMutation = useDeleteProfile()
 
   const users = usersResponse?.users || [];
   const totalUsers = usersResponse?.pagination.total || 0;
@@ -43,6 +45,10 @@ function RouteComponent() {
       header: 'Email'
     },
     {
+      key: 'company',
+      header: 'Company'
+    },
+    {
       key: 'role',
       header: 'Role',
       render: (user) => (
@@ -54,16 +60,6 @@ function RouteComponent() {
       header: 'Actions',
       render: (user) => (
         <div className="flex space-x-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleView(user);
-            }}
-          >
-            <Eye className="w-4 h-4" />
-          </Button>
           <Button
             size="sm"
             variant="outline"
@@ -91,20 +87,21 @@ function RouteComponent() {
     }
   ];
 
-  const handleView = (user: User) => {
-    console.log('View user:', user);
-  };
-
   const handleEdit = (user: User) => {
-    console.log('Edit user:', user);
+    navigate({ to: `/users/${user.id}/edit`})
   };
 
-  const handleDelete = (user: User) => {
-    console.log('Delete user:', user);
+  const handleDelete = async (user: User) => {
+    try {
+      await deleteUserMutation.mutateAsync(user.id)
+    } catch (error) {
+      console.error("Error deleting user: " + user.name)
+    }
+    
   };
 
   const handleRowClick = (user: User) => {
-    console.log('Row clicked:', user);
+    console.log('View user:', user);
   };
 
   return (

@@ -6,7 +6,7 @@
  * @returns A readable date string, e.g., "July 27, 2025, 2:51:36 PM"
  */
 export function formatTimestamp(
-  isoTimestamp: string | null,
+  isoTimestamp: string | undefined | null,
   options: Intl.DateTimeFormatOptions = {}
 ): string {
   if (!isoTimestamp || typeof isoTimestamp !== 'string') return '';

@@ -2,6 +2,7 @@ import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Toaster } from "@/components/atomic/sonner"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,7 @@ export const Route = createRootRoute({
       <Toaster />
       
       <TanStackRouterDevtools />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   ),
 })

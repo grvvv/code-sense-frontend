@@ -38,10 +38,10 @@ const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6 px-3 min-h-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-3 min-h-auto">
       {cards.map((card, index) => (
         <Link
-          to={`${card.href}`}
+          to={card.href}
           key={index}
           className={`
             relative group cursor-pointer

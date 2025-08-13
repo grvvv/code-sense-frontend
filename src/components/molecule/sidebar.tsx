@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronDown, ChevronRight, BarChart3, Users, PenTool, Layout, Gauge, Send, SearchCode } from 'lucide-react';
 import { Badge } from '@/components/atomic/badge';
 import { Button } from '@/components/atomic/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/atomic/collapsible';
 import { useNavigate } from '@tanstack/react-router';
+import { useMyPermissionsQuery } from '@/hooks/use-auth';
+import type { AllPermissions } from '@/types/auth';
+import { hasAnyPermission } from '@/utils/permissions';
+import { DotsLoader } from '../atomic/loader';
+
 
 interface MenuItem {
   id: string;
@@ -15,6 +20,9 @@ interface MenuItem {
   };
   children?: MenuItem[];
   href?: string;
+  requiredPermissions?: (keyof AllPermissions)[];
+  requireAll?: boolean;
+  alwaysVisible?: boolean; // For items like dashboard, profile, settings
 }
 
 interface SidebarProps {
@@ -28,26 +36,60 @@ const defaultMenuItems: MenuItem[] = [
     id: 'dashboards',
     title: 'Dashboards',
     icon: <Gauge className="w-4 h-4" />,
-    href: '/'
+    href: '/',
+    alwaysVisible: true // Dashboard should always be visible
   },
   {
     id: 'projects',
     title: 'Projects',
     icon: <PenTool className="w-4 h-4" />,
+    requiredPermissions: ['view_projects', 'create_project', 'view_findings', 'view_scans'],
+    requireAll: false, // Show if user has any project permission
     children: [
-      { id: 'new-project', title: 'Create Project', icon: <Send className="w-4 h-4" />, href: '/project/new' },
-      { id: 'project-list', title: 'Project List', icon: <Users className="w-4 h-4" />, href: '/project/list' },
-      { id: 'new-scan', title: 'Start Scan', icon: <SearchCode className="w-4 h-4" />, href: '/scan/start' },
+      { 
+        id: 'new-project', 
+        title: 'Create Project', 
+        icon: <Send className="w-4 h-4" />, 
+        href: '/project/new',
+        requiredPermissions: ['create_project']
+      },
+      { 
+        id: 'project-list', 
+        title: 'Project List', 
+        icon: <Users className="w-4 h-4" />, 
+        href: '/project/list',
+        requiredPermissions: ['view_projects']
+      },
+      { 
+        id: 'new-scan', 
+        title: 'Start Scan', 
+        icon: <SearchCode className="w-4 h-4" />, 
+        href: '/scan/start',
+        requiredPermissions: ['create_scan']
+      },
     ]
   },
   {
     id: 'users',
     title: 'Users',
     icon: <Layout className="w-4 h-4" />,
-    badge: { text: 'Hot', variant: 'hot' },
+    badge: { text: 'Admin', variant: 'hot' },
+    requiredPermissions: ['create_project'], 
     children: [
-      { id: 'new-project', title: 'Create Users', icon: <BarChart3 className="w-4 h-4" />, href: '/users/new' },
-      { id: 'project-list', title: 'Users List', icon: <Users className="w-4 h-4" />, href: '/users/list' }
+      { 
+        id: 'new-user', 
+        title: 'Create User', 
+        icon: <BarChart3 className="w-4 h-4" />, 
+        href: '/users/new',
+        requiredPermissions: ['create_project']
+      },
+      { 
+        id: 'user-list', 
+        title: 'Users List', 
+        icon: <Users className="w-4 h-4" />, 
+        href: '/users/list',
+        requiredPermissions: ['view_projects']
+      }
     ]
   }
 ];
@@ -68,6 +110,56 @@ export default function Sidebar({
 }: SidebarProps) {
   const [openItems, setOpenItems] = useState<string[]>(['projects']);
   const navigate = useNavigate();
+  const { data: userRole, isLoading } = useMyPermissionsQuery();
+
+  // Filter menu items based on permissions
+  const filteredMenuItems = useMemo(() => {
+    if (isLoading || !userRole) {
+      // Show loading state or basic items
+      return menuItems.filter(item => item.alwaysVisible);
+    }
+
+    const filterItems = (items: MenuItem[]): MenuItem[] => {
+      return items.filter(item => {
+        // Always show items marked as alwaysVisible
+        if (item.alwaysVisible) return true;
+
+        // If no permissions required, show the item
+        if (!item.requiredPermissions || item.requiredPermissions.length === 0) {
+          return true;
+        }
+
+        // Check if user has required permissions
+        const hasPermission = item.requireAll
+          ? item.requiredPermissions.every(permission => 
+              userRole.permissions[permission] === true
+            )
+          : hasAnyPermission(userRole.permissions, item.requiredPermissions);
+
+        if (!hasPermission) return false;
+
+        // If item has children, filter them too
+        if (item.children) {
+          const filteredChildren = filterItems(item.children);
+          // Only show parent if it has visible children or its own href
+          return filteredChildren.length > 0 || item.href;
+        }
+
+        return true;
+      }).map(item => {
+        // Filter children recursively
+        if (item.children) {
+          return {
+            ...item,
+            children: filterItems(item.children)
+          };
+        }
+        return item;
+      });
+    };
+
+    return filterItems(menuItems);
+  }, [menuItems, userRole, isLoading]);
 
   const toggleItem = (itemId: string) => {
     setOpenItems(prev => {
@@ -79,18 +171,17 @@ export default function Sidebar({
     );
   };
 
-
   const handleItemClick = (item: MenuItem) => {
     if (!item.children) {
       onItemClick?.(item);
-      navigate({
-        to: item.href
-      })
-      return
+      if (item.href) {
+        navigate({
+          to: item.href
+        });
+      }
+      return;
     }
-    
   };
-
 
   const renderMenuItem = (item: MenuItem, depth = 0) => {
     const isOpen = openItems.includes(item.id);
@@ -156,6 +247,25 @@ export default function Sidebar({
     );
   };
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="w-64 h-screen bg-brand-dark flex flex-col">
+        <div className="p-4 h-16 border-b border-brand-light/20">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-brand-red rounded flex items-center justify-center">
+              <span className="text-white font-bold text-lg">S</span>
+            </div>
+            <span className="text-brand-light font-custom text-lg tracking-wider">Code Sense</span>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-brand-light/60 text-sm"><DotsLoader /></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-64 h-screen bg-brand-dark flex flex-col">
       {/* Header */}
@@ -175,10 +285,25 @@ export default function Sidebar({
             MENU
           </div>
           <nav className="space-y-1">
-            {menuItems.map(item => renderMenuItem(item))}
+            {filteredMenuItems.length > 0 ? (
+              filteredMenuItems.map(item => renderMenuItem(item))
+            ) : (
+              <div className="text-brand-light/60 text-sm py-4">
+                No menu items available
+              </div>
+            )}
           </nav>
         </div>
       </div>
+
+      {/* User Role Indicator (Optional - for debugging) */}
+      {userRole && (
+        <div className="p-4 border-t border-brand-light/20">
+          <div className="text-xs text-brand-light/60">
+            Role: {userRole.role}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -19,6 +19,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-form": "^1.14.1",
     "@tanstack/react-query": "^5.83.0",
+    "@tanstack/react-query-devtools": "^5.84.2",
     "@tanstack/react-router": "^1.123.2",
     "@tanstack/react-router-devtools": "^1.123.2",
     "axios": "^1.10.0",

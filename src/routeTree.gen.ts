@@ -25,6 +25,7 @@ import { Route as AuthenticatedFindingFindingIdRouteImport } from './routes/_aut
 import { Route as AuthenticatedScanScanIdRouteRouteImport } from './routes/_authenticated/scan/$scanId/route'
 import { Route as AuthenticatedScanScanIdIndexRouteImport } from './routes/_authenticated/scan/$scanId/index'
 import { Route as AuthenticatedProjectProjectIdIndexRouteImport } from './routes/_authenticated/project/$projectId/index'
+import { Route as AuthenticatedUsersUserIdEditRouteImport } from './routes/_authenticated/users/$userId/edit'
 import { Route as AuthenticatedScanScanIdUpdatesRouteImport } from './routes/_authenticated/scan/$scanId/updates'
 import { Route as AuthenticatedScanScanIdFindingsRouteImport } from './routes/_authenticated/scan/$scanId/findings'
 import { Route as AuthenticatedProjectProjectIdEditRouteImport } from './routes/_authenticated/project/$projectId/edit'
@@ -112,6 +113,12 @@ const AuthenticatedProjectProjectIdIndexRoute =
     path: '/project/$projectId/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedUsersUserIdEditRoute =
+  AuthenticatedUsersUserIdEditRouteImport.update({
+    id: '/users/$userId/edit',
+    path: '/users/$userId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedScanScanIdUpdatesRoute =
   AuthenticatedScanScanIdUpdatesRouteImport.update({
     id: '/updates',
@@ -147,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/project/$projectId/edit': typeof AuthenticatedProjectProjectIdEditRoute
   '/scan/$scanId/findings': typeof AuthenticatedScanScanIdFindingsRoute
   '/scan/$scanId/updates': typeof AuthenticatedScanScanIdUpdatesRoute
+  '/users/$userId/edit': typeof AuthenticatedUsersUserIdEditRoute
   '/project/$projectId': typeof AuthenticatedProjectProjectIdIndexRoute
   '/scan/$scanId/': typeof AuthenticatedScanScanIdIndexRoute
 }
@@ -165,6 +173,7 @@ export interface FileRoutesByTo {
   '/project/$projectId/edit': typeof AuthenticatedProjectProjectIdEditRoute
   '/scan/$scanId/findings': typeof AuthenticatedScanScanIdFindingsRoute
   '/scan/$scanId/updates': typeof AuthenticatedScanScanIdUpdatesRoute
+  '/users/$userId/edit': typeof AuthenticatedUsersUserIdEditRoute
   '/project/$projectId': typeof AuthenticatedProjectProjectIdIndexRoute
   '/scan/$scanId': typeof AuthenticatedScanScanIdIndexRoute
 }
@@ -187,6 +196,7 @@ export interface FileRoutesById {
   '/_authenticated/project/$projectId/edit': typeof AuthenticatedProjectProjectIdEditRoute
   '/_authenticated/scan/$scanId/findings': typeof AuthenticatedScanScanIdFindingsRoute
   '/_authenticated/scan/$scanId/updates': typeof AuthenticatedScanScanIdUpdatesRoute
+  '/_authenticated/users/$userId/edit': typeof AuthenticatedUsersUserIdEditRoute
   '/_authenticated/project/$projectId/': typeof AuthenticatedProjectProjectIdIndexRoute
   '/_authenticated/scan/$scanId/': typeof AuthenticatedScanScanIdIndexRoute
 }
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/project/$projectId/edit'
     | '/scan/$scanId/findings'
     | '/scan/$scanId/updates'
+    | '/users/$userId/edit'
     | '/project/$projectId'
     | '/scan/$scanId/'
   fileRoutesByTo: FileRoutesByTo
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/project/$projectId/edit'
     | '/scan/$scanId/findings'
     | '/scan/$scanId/updates'
+    | '/users/$userId/edit'
     | '/project/$projectId'
     | '/scan/$scanId'
   id:
@@ -247,6 +259,7 @@ export interface FileRouteTypes {
     | '/_authenticated/project/$projectId/edit'
     | '/_authenticated/scan/$scanId/findings'
     | '/_authenticated/scan/$scanId/updates'
+    | '/_authenticated/users/$userId/edit'
     | '/_authenticated/project/$projectId/'
     | '/_authenticated/scan/$scanId/'
   fileRoutesById: FileRoutesById
@@ -370,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectProjectIdIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/users/$userId/edit': {
+      id: '/_authenticated/users/$userId/edit'
+      path: '/users/$userId/edit'
+      fullPath: '/users/$userId/edit'
+      preLoaderRoute: typeof AuthenticatedUsersUserIdEditRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/scan/$scanId/updates': {
       id: '/_authenticated/scan/$scanId/updates'
       path: '/updates'
@@ -435,6 +455,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedUsersListRoute: typeof AuthenticatedUsersListRoute
   AuthenticatedUsersNewRoute: typeof AuthenticatedUsersNewRoute
   AuthenticatedProjectProjectIdEditRoute: typeof AuthenticatedProjectProjectIdEditRoute
+  AuthenticatedUsersUserIdEditRoute: typeof AuthenticatedUsersUserIdEditRoute
   AuthenticatedProjectProjectIdIndexRoute: typeof AuthenticatedProjectProjectIdIndexRoute
 }
 
@@ -453,6 +474,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedUsersNewRoute: AuthenticatedUsersNewRoute,
   AuthenticatedProjectProjectIdEditRoute:
     AuthenticatedProjectProjectIdEditRoute,
+  AuthenticatedUsersUserIdEditRoute: AuthenticatedUsersUserIdEditRoute,
   AuthenticatedProjectProjectIdIndexRoute:
     AuthenticatedProjectProjectIdIndexRoute,
 }

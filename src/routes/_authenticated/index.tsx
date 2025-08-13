@@ -1,7 +1,7 @@
 
 import { DotsLoader } from '@/components/atomic/loader'
-import ChartComponent from '@/components/charts/base'
 import DashboardCards from '@/components/charts/cards'
+import ChartComponent from '@/components/charts/count-by-severity'
 import DonutChart from '@/components/charts/donut-chart'
 import { Unauthorized } from '@/components/molecule/unauthorized'
 import { authService } from '@/lib/auth'
@@ -17,10 +17,10 @@ export const Route = createFileRoute('/_authenticated/')({
 })
  
 function Index() {
-  let { data, isLoading, isError, error } = useQuery({
-      queryKey: ['dashboard'],
-      queryFn: () => generalService.fetchDashboard(),
-    });
+  let { data, isLoading, isError } = useQuery({
+    queryKey: ['dashboard'],
+    queryFn: () => generalService.fetchDashboard(),
+  });
 
   if (isLoading) return <DotsLoader />
 
@@ -32,9 +32,9 @@ function Index() {
     <div className="p-2">
       <div className="h-full w-full overflow-hidden">
         <DashboardCards data={data?.top_counts} />
-        <div className="grid grid-cols-2 gap-4 p-6">
-          <DonutChart value={data?.system_status.active_percentage} />
-          <ChartComponent value={data?.findings_trend}/>
+        <div className="grid grid-cols-2 gap-4 p-3">
+          <DonutChart data={data?.system_status} />
+          <ChartComponent data={data?.count_by_severity}/>
         </div>
       </div>
      

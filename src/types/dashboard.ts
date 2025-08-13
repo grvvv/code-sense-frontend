@@ -5,12 +5,32 @@ export interface StatCountDetails {
   findings: number
 }
 
-interface SystemStatus {
-  active_percentage: number,
-  remaining_percentage: number
+type SeverityData = {
+  critical: number;
+  high: number;
+  medium: number;
+  low: number;
+};
+
+type ScanStatus = {
+  complete: number;
+  in_progress: number;
+  failed: number;
+  queued: number;
+};
+
+export interface SeverityChartDetails {
+  open: SeverityData,
+  close: SeverityData
 }
+
+export interface SystemStatus {
+  counts: ScanStatus,
+  total_scans: number
+}
+
 export interface DashboardResponse {
-  top_counts: StatCountDetails;
-  system_status: SystemStatus;
-  findings_trend: object[]
+  top_counts: StatCountDetails,
+  system_status: SystemStatus,
+  count_by_severity: SeverityChartDetails
 }

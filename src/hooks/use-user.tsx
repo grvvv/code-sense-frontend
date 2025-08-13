@@ -1,5 +1,5 @@
 import { userService } from '@/services/user.service';
-import type { RegisterCredentials } from '@/types/auth';
+import type { RegisterCredentials, UpdateUserCredentials } from '@/types/auth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useUserProfile(userId: string) {
@@ -17,13 +17,29 @@ export function useUsers(params?: { page?: number; limit?: number; search?: stri
   });
 }
 
+export function useDeleteProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) =>
+      userService.deleteUser(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users', 'list'] });
+    },
+    onError: (error) => {
+      console.error('Failed to update user:', error);
+    },
+  });
+}
+
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ userId, data }: { userId: string; data: any }) =>
+    mutationFn: ({ userId, data }: { userId: string; data: UpdateUserCredentials }) =>
       userService.updateProfile(userId, data),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['user']})
       queryClient.setQueryData(['users', data.id], data);
       queryClient.invalidateQueries({ queryKey: ['users', 'list'] });
     },

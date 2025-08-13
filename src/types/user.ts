@@ -3,7 +3,7 @@ export interface UserProfile {
   company: string,
   email: string;
   name: string;
-  role: string;
+  role: 'admin' | 'manager' | 'user';
   created_at: string;
   updated_at: string;
 }

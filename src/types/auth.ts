@@ -9,6 +9,7 @@ export interface User {
 }
 
 export type PermissionRole = 'user' | 'manager'
+
 export interface AllPermissions {
     create_project: boolean;
     delete_project: boolean;
@@ -29,7 +30,7 @@ export interface AllPermissions {
 
 export interface RolePermissions {
   role: PermissionRole;
-  permissions: AllPermissions | {};
+  permissions: AllPermissions;
 }
 
 
@@ -42,7 +43,15 @@ export interface RegisterCredentials {
   name: string;
   email: string;
   password: string;
-  role: string;
+  role: 'admin' | 'manager' | 'user';
+  company: string;
+}
+
+export interface UpdateUserCredentials {
+  name: string;
+  email: string;
+  password?: string;
+  role: 'admin' | 'manager' | 'user';
   company: string;
 }
 

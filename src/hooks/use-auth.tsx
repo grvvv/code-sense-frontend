@@ -86,3 +86,12 @@ export function useUpdatePermissions() {
     }
   });
 }
+
+export function useMyPermissionsQuery() {
+  return useQuery({
+    queryKey: ['userPermissions'],
+    queryFn: () => generalService.fetchMyPermissions(),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+}

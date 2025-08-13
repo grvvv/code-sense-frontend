@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Settings, User, ChevronDown, Menu, Sun, Moon, LogOut, UserCircle } from 'lucide-react';
 import { Button } from '@/components/atomic/button';
 import {
@@ -10,7 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/atomic/dropdown-menu';
 import { useAuth } from '@/hooks/use-auth';
-
+import { useTheme } from '@/contexts/use-theme';
+ 
 interface HeaderProps {
   onMenuToggle?: () => void;
   notifications?: number;
@@ -25,12 +25,10 @@ export default function Header({
   onProfileClick,
   onSettingsClick,
 }: HeaderProps) {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const { isDarkMode, toggleTheme } = useTheme();
   const { logout, user } = useAuth()
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+
 
   return (
     <header className="h-16 w-full bg-brand-light border-b border-brand-dark/10 flex items-center justify-between px-4 lg:px-6">

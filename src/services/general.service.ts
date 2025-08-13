@@ -14,6 +14,10 @@ class GeneralService extends BaseApiClient {
   async updatePermissions(data: RolePermissions): Promise<RolePermissions> {
     return this.post<RolePermissions>('/api/auth/permissions/update/', data);
   }
+
+  async fetchMyPermissions(): Promise<RolePermissions>{
+    return this.get<RolePermissions>('/api/auth/permissions/me');
+  }
 }
 
 export const generalService = new GeneralService();

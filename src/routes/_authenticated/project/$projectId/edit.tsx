@@ -6,6 +6,7 @@ import { Input } from '@/components/atomic/input';
 import type { CreateProjectDetails } from '@/types/project';
 import { useProjectDetails, useUpdateProject } from '@/hooks/use-project';
 import { Card, CardHeader, CardTitle } from '@/components/atomic/card';
+import { DotsLoader } from '@/components/atomic/loader';
 
 export const Route = createFileRoute('/_authenticated/project/$projectId/edit')({
   component: RouteComponent,
@@ -85,9 +86,7 @@ function RouteComponent() {
   if (isLoading) {
     return (
       <div className="p-6 max-w-7xl mx-auto">
-        <div className="flex justify-center items-center h-64">
-          <div className="text-gray-600">Loading project...</div>
-        </div>
+        <DotsLoader />
       </div>
     );
   }
