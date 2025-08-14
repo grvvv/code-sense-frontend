@@ -23,7 +23,7 @@ class ScanService extends BaseApiClient {
   }
 
   async deleteScan(scanId: string): Promise<void> {
-    return this.delete<void>(`api/scans/${scanId}/`);
+    return this.delete<void>(`api/scans/delete/${scanId}/`);
   }
 
   async downloadCsv(scanId: string): Promise<any> {

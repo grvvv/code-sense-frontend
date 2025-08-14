@@ -19,7 +19,7 @@ class FindingService extends BaseApiClient {
   }
 
   async deleteFinding(findingId: string): Promise<void> {
-    return this.delete<void>(`api/findings/${findingId}/`);
+    return this.delete<void>(`api/findings/delete/${findingId}/`);
   }
 }
 

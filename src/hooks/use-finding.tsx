@@ -23,23 +23,26 @@ export function useUpdateFinding() {
   });
 }
 
+export function useDeleteFinding() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (findingId: string) => 
+      findingService.deleteFinding(findingId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['findings', 'list']})
+    },
+  });
+}
+
 export function useToggleFindingApproved() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (findingId: string) => 
       findingService.toggleApproveFinding(findingId),
-    onSuccess: (updatedFinding) => {
-      // ✅ Update cached list data for findings
-      // queryClient.setQueryData(['findings', 'list'], (old: FindingDetails[] | undefined) => {
-      //   if (!old) return old;
-      //   return old.map((f) =>
-      //     f.id === updatedFinding.id
-      //       ? { ...f, approved: updatedFinding.approved }
-      //       : f
-      //   );
-      // });
-      queryClient.invalidateQueries(['findings', 'list'])
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['findings', 'list']})
     },
   });
 }

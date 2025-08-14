@@ -4,7 +4,7 @@ import { Button } from '@/components/atomic/button';
 import { Edit, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { formatTimestamp } from '@/utils/timestampFormater';
-import { useProjects } from '@/hooks/use-project';
+import { useDeleteProject, useProjects } from '@/hooks/use-project';
 import type { ProjectDetails } from '@/types/project';
 
 export const Route = createFileRoute('/_authenticated/project/list')({
@@ -22,6 +22,7 @@ function RouteComponent() {
     page: currentPage,
     limit: usersPerPage,
   });
+  const deletedProjectMutation = useDeleteProject()
 
   const projects = projectResponse?.projects || [];
   const totalProjects = projectResponse?.pagination.total || 0;
@@ -82,16 +83,16 @@ function RouteComponent() {
     }
   ];
 
-  const handleEdit = (user: ProjectDetails) => {
-    navigate({from: '/project/list', to: `../${user.id}/edit`})
+  const handleEdit = (project: ProjectDetails) => {
+    navigate({from: '/project/list', to: `../${project.id}/edit`})
   };
 
-  const handleDelete = (user: ProjectDetails) => {
-    console.log('Delete user:', user);
+  const handleDelete = async (project: ProjectDetails) => {
+    await deletedProjectMutation.mutateAsync(project.id)
   };
 
-  const handleRowClick = (user: ProjectDetails) => {
-    navigate({from: '/project/list', to: `../${user.id}`})
+  const handleRowClick = (project: ProjectDetails) => {
+    navigate({from: '/project/list', to: `../${project.id}`})
   };
 
   return (

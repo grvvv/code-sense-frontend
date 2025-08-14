@@ -18,18 +18,17 @@ export function useScans(projectId: string, params?: { page?: number; limit?: nu
   });
 }
 
-// export function useUpdateScan() {
-//   const queryClient = useQueryClient();
+export function useDeleteScan() {
+  const queryClient = useQueryClient();
 
-//   return useMutation({
-//     mutationFn: ({ scanId, scanData }: { scanId: string; scanData: any }) =>
-//       scanService.updateScan(scanId, scanData),
-//     onSuccess: (data) => {
-//       queryClient.setQueryData(['scans', data.id], data);
-//       queryClient.invalidateQueries({ queryKey: ['scans', 'list'] });
-//     },
-//   });
-// }
+  return useMutation({
+    mutationFn: (scanId: string) =>
+      scanService.deleteScan(scanId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['scans', 'list'] });
+    },
+  });
+}
 
 export function useCreateScan() {
   const queryClient = useQueryClient();

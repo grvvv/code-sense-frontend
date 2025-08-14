@@ -3,7 +3,7 @@ import { GenericTable, type TableColumn } from '@/components/molecule/generic-ta
 import { Button } from '@/components/atomic/button';
 import { Download, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { useScans } from '@/hooks/use-scans';
+import { useDeleteScan, useScans } from '@/hooks/use-scans';
 import type { ScanDetails } from '@/types/scan';
 import { StateBadge } from '@/components/atomic/enum-badge';
 import { scanService } from '@/services/scan.service';
@@ -23,6 +23,7 @@ function RouteComponent() {
     page: currentPage,
     limit: scansPerPage,
   });
+  const deleteScanMutation = useDeleteScan()
 
   const scans = scanResponse?.scans || [];
   const totalScans = scanResponse?.pagination.total || 0;
@@ -115,8 +116,11 @@ function RouteComponent() {
 
   }
 
-  const handleDelete = (scan: ScanDetails) => {
-    console.log('Delete user:', scan);
+  const handleDelete = async (scan: ScanDetails) => {
+    if (confirm(`Do you really want to delete: ${scan.scan_name}?`) == true) {
+      await deleteScanMutation.mutateAsync(scan.id)
+    } else {
+    }
   };
 
   const handleRowClick = (scan: ScanDetails) => {

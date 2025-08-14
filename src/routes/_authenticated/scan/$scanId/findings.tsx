@@ -3,7 +3,7 @@ import { GenericTable, type TableColumn } from '@/components/molecule/generic-ta
 import { Button } from '@/components/atomic/button';
 import { Eye, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { useFindings, useToggleFindingApproved } from '@/hooks/use-finding';
+import { useDeleteFinding, useFindings, useToggleFindingApproved } from '@/hooks/use-finding';
 import type { FindingDetails } from '@/types/finding';
 import { SecurityBadge, StatusBadge } from '@/components/atomic/enum-badge';
 
@@ -24,6 +24,7 @@ function FindingsComponent() {
   });
 
   const toggleFindingApproved = useToggleFindingApproved();
+  const deleteFindingMutation = useDeleteFinding();
 
   const findings = findingsResponse?.findings || [];
   const totalFindings = findingsResponse?.pagination.total || 0;
@@ -39,12 +40,12 @@ function FindingsComponent() {
     });
   };
 
-  const handleDelete = (finding: FindingDetails) => {
-    console.log('Delete finding:', finding);
-  };
-
-  const handleRowClick = (finding: FindingDetails) => {
-    // navigate to detail if needed
+  const handleDelete = async (finding: FindingDetails) => {
+    try {
+      await deleteFindingMutation.mutateAsync(finding.id)
+    } catch (error) {
+      console.error("error: "+ error.message)
+    }
   };
 
   const findingColumns: TableColumn<FindingDetails>[] = [
@@ -131,7 +132,6 @@ function FindingsComponent() {
       currentPage={currentPage}
       onPageChange={setCurrentPage}
       emptyMessage="No findings found"
-      onRowClick={handleRowClick}
       rowClassName={() => `hover:bg-gray-50`}
     />
   );

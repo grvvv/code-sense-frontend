@@ -24,6 +24,21 @@ export function useUpdateProject() {
   });
 }
 
+export function useDeleteProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (projectId: string) =>
+      projectService.deleteProject(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects', 'list'] });
+    },
+    onError: (error) => {
+      console.error('Failed to update user:', error);
+    },
+  });
+}
+
 export function useCreateProject() {
   const queryClient = useQueryClient();
 
