@@ -22,19 +22,19 @@ function RouteComponent() {
   const activeTab = getActiveTab();
   
   return (
-    <div className="bg-gray-50 p-2">
+    <div className="p-2">
       <div className="max-w-8xl mx-auto">
 
         {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="flex border-b border-gray-200">
+        <div className="bg-card text-card-foreground rounded-lg shadow-sm border overflow-hidden">
+          <div className="flex border-b">
             <Link
               to="/scan/$scanId/updates"
               params={{ scanId }}
               className={`flex-1 py-4 px-6 text-sm font-medium transition-colors duration-200 text-center ${
                 activeTab === 'updates'
-                  ? 'bg-red-600 text-white border-b-2 border-red-600'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                  ? 'bg-primary text-white border-b-2 border-primary'
+                  : ''
               }`}
             >
               Updates
@@ -44,13 +44,13 @@ function RouteComponent() {
               params={{ scanId }}
               className={`flex-1 py-4 px-6 text-sm font-medium transition-colors duration-200 text-center ${
                 activeTab === 'findings'
-                  ? 'bg-red-600 text-white border-b-2 border-red-600'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                  ? 'bg-primary text-white border-b-2 border-primary'
+                  : ''
               }`}
             >
               Findings
               {scan?.findings && (
-                <span className="ml-2 px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
+                <span className="ml-2 px-2 py-1 text-xs rounded-full bg-red-100 text-primary">
                   {scan.findings}
                 </span>
               )}

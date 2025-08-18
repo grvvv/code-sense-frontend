@@ -5,7 +5,7 @@ export interface StatCountDetails {
   findings: number
 }
 
-type SeverityData = {
+export type SeverityData = {
   critical: number;
   high: number;
   medium: number;
@@ -19,11 +19,6 @@ type ScanStatus = {
   queued: number;
 };
 
-export interface SeverityChartDetails {
-  open: SeverityData,
-  close: SeverityData
-}
-
 export interface SystemStatus {
   counts: ScanStatus,
   total_scans: number
@@ -32,5 +27,5 @@ export interface SystemStatus {
 export interface DashboardResponse {
   top_counts: StatCountDetails,
   system_status: SystemStatus,
-  count_by_severity: SeverityChartDetails
+  count_by_severity: SeverityData
 }

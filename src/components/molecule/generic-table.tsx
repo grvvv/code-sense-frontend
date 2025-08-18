@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card } from '@/components/atomic/card';
+import { Card, CardContent, CardHeader } from '@/components/atomic/card';
 import { Button } from '@/components/atomic/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DotsLoader } from '../atomic/loader';
@@ -53,7 +53,7 @@ export function GenericTable<T extends Record<string, any>>({
   emptyMessage = "No data available",
   className = "",
   tableClassName = "",
-  headerClassName = "bg-gray-100",
+  headerClassName = "bg-secondary",
   rowClassName = "hover:bg-gray-50",
   onRowClick,
 }: GenericTableProps<T>) {
@@ -148,47 +148,53 @@ export function GenericTable<T extends Record<string, any>>({
 
   if (loading) {
     return (
-      <Card className={`py-0 overflow-hidden ${className}`}>
-        <div className="p-6" style={{ backgroundColor: "#f8f9fa" }}>
+      <Card className={className}>
+        <CardHeader>
           {title && (
-            <h2 className="text-3xl font-bold text-gray-800 mb-8" style={{ color: "#2d2d2d" }}>
+            <h2 className="text-3xl font-bold">
               {title}
             </h2>
           )}
+        </CardHeader>
+        <CardContent>
           <DotsLoader />
-        </div>
+        </CardContent>
       </Card>
     );
   }
 
   if (error) {
     return (
-      <Card className={`py-0 overflow-hidden ${className}`}>
-        <div className="p-6" style={{ backgroundColor: "#f8f9fa" }}>
+      <Card className={className}>
+        <CardHeader>
           {title && (
-            <h2 className="text-3xl font-bold text-gray-800 mb-8" style={{ color: "#2d2d2d" }}>
+            <h2 className="text-3xl font-bold">
               {title}
             </h2>
           )}
+        </CardHeader>
+        <CardContent>
           <div className="flex justify-center items-center py-8">
-            <div className="text-red-600">Error: {error}</div>
+            <div className="text-primary-950 dark:text-primary-300">Error: {error}</div>
           </div>
-        </div>
+        </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className={`py-0 overflow-hidden ${className}`}>
-      <div className="p-6" style={{ backgroundColor: "#f8f9fa" }}>
+    <Card className={className}>
+      <CardHeader>
         {title && (
-          <h2 className="text-3xl font-bold text-gray-800 mb-8" style={{ color: "#2d2d2d" }}>
+          <h2 className="text-3xl font-bold">
             {title}
           </h2>
         )}
+      </CardHeader>
         
-        <div className="bg-white shadow-md overflow-hidden" style={{ border: "1px solid #e5e5e5" }}>
-          <table className={`w-full text-left border border-gray-200 rounded-lg ${tableClassName}`}>
+      <CardContent>
+        <div className="shadow-md overflow-hidden">
+          <table className={`w-full text-left border rounded-lg ${tableClassName}`}>
             <thead className={headerClassName}>
               <tr>
                 {columns.map((column, index) => (
@@ -205,7 +211,7 @@ export function GenericTable<T extends Record<string, any>>({
             <tbody>
               {currentData.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={columns.length} className="px-4 py-8 text-center">
                     {emptyMessage}
                   </td>
                 </tr>
@@ -314,7 +320,8 @@ export function GenericTable<T extends Record<string, any>>({
             </div>
           </div>
         )}
-      </div>
+      </CardContent> 
+        
     </Card>
   );
 }

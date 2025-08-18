@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   BarChart,
   Bar,
@@ -8,7 +7,7 @@ import {
   ResponsiveContainer,
   Cell
 } from 'recharts';
-import type { SeverityChartDetails } from '@/types/dashboard';
+import type { SeverityData } from '@/types/dashboard';
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -26,10 +25,8 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const ChartComponent = ({ data }: { data: SeverityChartDetails }) => {
-  const [view, setView] = useState<'open' | 'closed'>('open');
-
-  const current = view === 'open' ? data.open : data.close;
+const ChartComponent = ({ data }: { data: SeverityData }) => {
+  const current = data;
 
   const chartData = [
     { type: 'Critical', value: current.critical },
@@ -51,30 +48,8 @@ const ChartComponent = ({ data }: { data: SeverityChartDetails }) => {
       <div className="p-6 pb-4">
         <div className="flex justify-between items-center gap-4">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
-            Severity Count (By Status)
+            Severity Counts
           </h3>
-          <div className="flex space-x-1 bg-gray-100 dark:bg-[#3a3a3a] p-1 rounded-lg">
-            <button
-              onClick={() => setView('open')}
-              className={`px-6 py-2 rounded-md font-medium transition-all duration-200 ${
-                view === 'open'
-                  ? 'bg-[#bf0000] text-white shadow-sm'
-                  : 'text-gray-700 hover:bg-gray-200 dark:text-[#e5e5e5] dark:hover:bg-[#444]'
-              }`}
-            >
-              Open
-            </button>
-            <button
-              onClick={() => setView('closed')}
-              className={`px-6 py-2 rounded-md font-medium transition-all duration-200 ${
-                view === 'closed'
-                  ? 'bg-[#bf0000] text-white shadow-sm'
-                  : 'text-gray-700 hover:bg-gray-200 dark:text-[#e5e5e5] dark:hover:bg-[#444]'
-              }`}
-            >
-              Closed
-            </button>
-          </div>
         </div>
       </div>
 

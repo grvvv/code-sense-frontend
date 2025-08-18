@@ -44,7 +44,7 @@ function FindingsComponent() {
     try {
       await deleteFindingMutation.mutateAsync(finding.id)
     } catch (error) {
-      console.error("error: "+ error.message)
+      console.error("error: "+ error)
     }
   };
 
@@ -132,7 +132,9 @@ function FindingsComponent() {
       currentPage={currentPage}
       onPageChange={setCurrentPage}
       emptyMessage="No findings found"
-      rowClassName={() => `hover:bg-gray-50`}
+      rowClassName={() => 
+        `hover:bg-gray-50 hover:dark:bg-gray-300/10`
+      }
     />
   );
 }

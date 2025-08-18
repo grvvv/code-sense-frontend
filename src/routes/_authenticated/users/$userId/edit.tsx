@@ -5,6 +5,7 @@ import { useUpdateProfile, useUserProfile } from '@/hooks/use-user';
 import { Button } from '@/components/atomic/button';
 import { Input } from '@/components/atomic/input';
 import { DotsLoader } from '@/components/atomic/loader';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atomic/select';
 
 export const Route = createFileRoute('/_authenticated/users/$userId/edit')({
   component: RouteComponent,
@@ -16,7 +17,7 @@ interface FormData {
   email: string;
   password?: string;
   confirmPassword?: string;
-  role: 'admin' | 'manager' | 'user' | '';
+  role: 'admin' | 'manager' | 'user' | string;
 }
 
 function RouteComponent() {
@@ -37,12 +38,15 @@ function RouteComponent() {
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
+  // Initialize form data when user data is loaded
   useEffect(() => {
     if (user) {
       setForm({
         company: user.company || '',
         name: user.name || '',
         email: user.email || '',
+        password: '', // Keep empty for security
+        confirmPassword: '', // Keep empty for security
         role: user.role || '',
       });
     }
@@ -58,6 +62,16 @@ function RouteComponent() {
     }
   };
 
+  // Handle Select component value change
+  const handleSelectChange = (value: string) => {
+    setForm((prev) => ({ ...prev, role: value as FormData['role'] }));
+    
+    // Clear error on select change
+    if (errors.role) {
+      setErrors((prev) => ({ ...prev, role: undefined }));
+    }
+  };
+
   const validate = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
@@ -68,10 +82,18 @@ function RouteComponent() {
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-    if (form.password !== form.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+    
+    // Only validate password if it's provided (optional for updates)
+    if (form.password && form.password.length > 0) {
+      if (form.password.length < 6) {
+        newErrors.password = 'Password must be at least 6 characters long';
+      }
+      if (form.password !== form.confirmPassword) {
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
     }
-    if (!form.role) newErrors.role = "";
+    
+    if (!form.role) newErrors.role = "Please select a role";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -87,26 +109,17 @@ function RouteComponent() {
         company: form.company,
         name: form.name,
         email: form.email,
-        password: form.password || undefined,
+        // Only include password if it's provided and not empty
+        ...(form.password && form.password.length > 0 && { password: form.password }),
         role: form.role as 'admin'| 'manager' | 'user',
       };
 
-      await updateUserMutation.mutateAsync({userId, data: userData});
+      await updateUserMutation.mutateAsync({ userId, data: userData });
       
-      // Reset form
-      setForm({
-        company: '',
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        role: '',
-      });
-      
-      // Navigate back to users list or show success message
+      // Navigate back to users list
       navigate({ to: '/users/list' });
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error('Error updating user:', error);
       // Handle error - you might want to show a toast notification
     }
   };
@@ -128,18 +141,18 @@ function RouteComponent() {
       <div className="p-6 max-w-7xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className='text-2xl text-red-600'>Error</CardTitle>
+            <CardTitle className='text-2xl text-destructive'>Error</CardTitle>
           </CardHeader>
           <div className="p-6">
-            <p className="text-gray-600 mb-4">
-              {error ? 'Failed to load project details.' : 'Project not found.'}
+            <p className="text-muted-foreground mb-4">
+              {error ? 'Failed to load user details.' : 'User not found.'}
             </p>
-            <button
+            <Button
               onClick={handleCancel}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded"
+              variant="secondary"
             >
-              Back to Projects
-            </button>
+              Back to Users List
+            </Button>
           </div>
         </Card>
       </div>
@@ -151,12 +164,11 @@ function RouteComponent() {
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Create New User</h2>
+            <h2 className="text-2xl font-bold">Edit User</h2>
             <Button
               variant="ghost"
               type="button"
               onClick={() => navigate({ to: '/users/list' })}
-              className="text-gray-600 hover:text-gray-800 text-sm"
             >
               ← Back to Users List
             </Button>
@@ -171,11 +183,11 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={updateUserMutation.isPending}
               className={`${
-                errors.company ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.company ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Enter company name"
             />
-            {errors.company && <p className="text-sm text-red-600 mt-1">{errors.company}</p>}
+            {errors.company && <p className="text-sm text-destructive mt-1">{errors.company}</p>}
           </div>
 
           {/* Username */}
@@ -187,11 +199,11 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={updateUserMutation.isPending}
               className={`${
-                errors.company ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.name ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Enter username"
             />
-            {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
+            {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
           </div>
 
           {/* Email */}
@@ -204,16 +216,19 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={updateUserMutation.isPending}
               className={`${
-                errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.email ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Enter email address"
             />
-            {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block text-sm font-medium mb-1">
+              New Password 
+              <span className="text-muted-foreground font-normal"> (leave blank to keep current password)</span>
+            </label>
             <Input
               type="password"
               name="password"
@@ -221,72 +236,78 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={updateUserMutation.isPending}
               className={`${
-                errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.password ? 'border-destructive bg-destructive/10' : ''
               }`}
-              placeholder="Enter password (min 6 characters)"
+              placeholder="Enter new password (min 6 characters)"
             />
-            {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-sm text-destructive mt-1">{errors.password}</p>}
           </div>
 
           {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Confirm Password</label>
-            <Input
-              type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              disabled={updateUserMutation.isPending}
-              className={`${
-                errors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-gray-300'
-              }`}
-              placeholder="Confirm your password"
-            />
-            {errors.confirmPassword && <p className="text-sm text-red-600 mt-1">{errors.confirmPassword}</p>}
-          </div>
+          {form.password && form.password.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium mb-1">Confirm New Password</label>
+              <Input
+                type="password"
+                name="confirmPassword"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                disabled={updateUserMutation.isPending}
+                className={`${
+                  errors.confirmPassword ? 'border-destructive bg-destructive/10' : ''
+                }`}
+                placeholder="Confirm your new password"
+              />
+              {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword}</p>}
+            </div>
+          )}
 
-          {/* Role */}
+          {/* Role - Shadcn Select with proper value handling */}
           <div>
             <label className="block text-sm font-medium mb-1">Role</label>
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
+            <Select 
+              value={form.role || undefined} // Convert empty string to undefined for proper placeholder display
+              onValueChange={handleSelectChange}
               disabled={updateUserMutation.isPending}
-              className={`w-full border rounded p-3 ${errors.role ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
             >
-              <option value="">Select role</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="user">User</option>
-            </select>
-            {errors.role && <p className="text-sm text-red-600 mt-1">{errors.role}</p>}
+              <SelectTrigger className={`${
+                errors.role ? 'border-destructive bg-destructive/10' : ''
+              }`}>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="manager">Manager</SelectItem>
+                <SelectItem value="user">User</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.role && <p className="text-sm text-destructive mt-1">{errors.role}</p>}
           </div>
 
           {/* Error Message */}
           {updateUserMutation.error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              Error creating user: {updateUserMutation.error.message}
+            <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded">
+              Error updating user: {updateUserMutation.error.message}
             </div>
           )}
 
           {/* Submit Button */}
-          <div className="flex gap-4">
-            <button
+          <div className="flex gap-2">
+            <Button
               type="submit"
               disabled={updateUserMutation.isPending}
-              className="flex-1 bg-red-700 hover:bg-red-800 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded shadow transition-colors"
+              className="flex-1"
             >
-              {updateUserMutation.isPending ? 'Creating User...' : 'Create User'}
-            </button>
-            <button
+              {updateUserMutation.isPending ? 'Updating User...' : 'Update User'}
+            </Button>
+            <Button
               type="button"
-              onClick={() => navigate({ to: '/users/list' })}
+              onClick={handleCancel}
               disabled={updateUserMutation.isPending}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:cursor-not-allowed"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </form>
       </Card>

@@ -7,8 +7,9 @@ export const Route = createFileRoute('/_authenticated')({
 })
 
 function RouteComponent() {
+  
   return (
-    <div className='flex h-screen overflow-hidden'>
+    <div className='flex h-screen overflow-hidden bg-background'>
       {/* Fixed Sidebar */}
       <div className='fixed left-0 top-0 h-full z-10'>
         <Sidebar />

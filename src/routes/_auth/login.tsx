@@ -1,3 +1,4 @@
+import { Button } from '@/components/atomic/button';
 import { Input } from '@/components/atomic/input';
 import { useAuth } from '@/hooks/use-auth';
 import { authService } from '@/lib/auth';
@@ -31,13 +32,13 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#2D2D2D' }}>
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md text-black">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="px-8 pt-8 pb-6 text-center" style={{ backgroundColor: '#E5E5E5' }}>
             <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: '#BF0000' }}>
               <User className="size-10 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-black mb-2">Welcome Back</h1>
+            <h1 className="text-2xl font-bold text-black mb-2">Login</h1>
           </div>
 
           {/* Form */}
@@ -148,13 +149,12 @@ function RouteComponent() {
             )}
 
             {/* Submit */}
-            <button
+            <Button
               type="submit"
               disabled={isLoginLoading}
-              className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-200 ${
+              className={`w-full py-5 px-4 ${
                 isLoginLoading ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-lg active:scale-95'
               }`}
-              style={{ backgroundColor: '#BF0000' }}
             >
               {isLoginLoading ? (
                 <div className="flex items-center justify-center">
@@ -164,7 +164,7 @@ function RouteComponent() {
               ) : (
                 'Sign In'
               )}
-            </button>
+            </Button>
           </form>
 
         </div>

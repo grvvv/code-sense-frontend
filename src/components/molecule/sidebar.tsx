@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronRight, BarChart3, Users, PenTool, Layout, Gauge, Send, SearchCode } from 'lucide-react';
+import { ChevronDown, ChevronRight, BarChart3, Users, PenTool, Layout, Gauge, Send, SearchCode, Cog, UserCircle2 } from 'lucide-react';
 import { Badge } from '@/components/atomic/badge';
 import { Button } from '@/components/atomic/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/atomic/collapsible';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useMyPermissionsQuery } from '@/hooks/use-auth';
 import type { AllPermissions } from '@/types/auth';
 import { hasAnyPermission } from '@/utils/permissions';
@@ -33,8 +33,8 @@ interface SidebarProps {
 
 const defaultMenuItems: MenuItem[] = [
   {
-    id: 'dashboards',
-    title: 'Dashboards',
+    id: 'dashboard',
+    title: 'Dashboard',
     icon: <Gauge className="w-4 h-4" />,
     href: '/',
     alwaysVisible: true // Dashboard should always be visible
@@ -91,7 +91,21 @@ const defaultMenuItems: MenuItem[] = [
         requiredPermissions: ['view_projects']
       }
     ]
-  }
+  },
+  {
+    id: 'settings',
+    title: 'Settings',
+    icon: <Cog className="w-4 h-4" />,
+    href: '/settings',
+    alwaysVisible: true // Dashboard should always be visible
+  },
+  {
+    id: 'profile',
+    title: 'Profile',
+    icon: <UserCircle2 className="w-4 h-4" />,
+    href: '/profile',
+    alwaysVisible: true // Dashboard should always be visible
+  },
 ];
 
 const badgeVariants = {
@@ -104,10 +118,18 @@ const badgeVariants = {
 };
 
 export default function Sidebar({ 
-  menuItems = defaultMenuItems, 
-  activeItem = 'dashboards',
+  menuItems = defaultMenuItems,
   onItemClick 
 }: SidebarProps) {
+
+  {/* Active Element */}
+  const { location } = useRouterState();
+  const activeItem = useMemo(() => {
+    const allItems = menuItems.flatMap(i => [i, ...(i.children || [])]);
+    const found = allItems.find(i => i.href === location.pathname);
+    return found?.id || "dashboard";
+  }, [location.pathname, menuItems]);
+
   const [openItems, setOpenItems] = useState<string[]>(['projects']);
   const navigate = useNavigate();
   const { data: userRole, isLoading } = useMyPermissionsQuery();
@@ -195,8 +217,8 @@ export default function Sidebar({
             <CollapsibleTrigger asChild>
               <Button
                 variant="ghost"
-                className={`w-full justify-between px-3 py-2 h-auto font-normal text-left hover:bg-brand-light/50 ${
-                  isActive ? 'bg-brand-red text-white hover:bg-brand-red hover:text-white' : 'text-brand-light'
+                className={`w-full justify-between px-3 py-2 h-auto font-normal text-left hover:bg-sidebar-accent/50 ${
+                  isActive ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:sidebar-primary-foreground' : 'text-sidebar-foreground'
                 } ${depth > 0 ? 'pl-6' : ''}`}
                 onClick={() => handleItemClick(item)}
               >
@@ -225,8 +247,8 @@ export default function Sidebar({
         ) : (
           <Button
             variant="ghost"
-            className={`w-full justify-between px-3 py-2 h-auto font-normal text-left hover:bg-brand-light/50 ${
-              isActive ? 'bg-brand-red text-white hover:bg-brand-red hover:text-white' : 'text-brand-light'
+            className={`w-full justify-between px-3 py-2 h-auto font-normal text-left hover:bg-sidebar-accent/50 ${
+              isActive ? 'bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:sidebar-primary-foreground' : 'text-sidebar-foreground'
             } ${depth > 0 ? 'pl-6' : ''}`}
             onClick={() => handleItemClick(item)}
           >
@@ -250,45 +272,46 @@ export default function Sidebar({
   // Show loading state
   if (isLoading) {
     return (
-      <div className="w-64 h-screen bg-brand-dark flex flex-col">
-        <div className="p-4 h-16 border-b border-brand-light/20">
+      <div className="w-64 h-screen bg-sidebar flex flex-col">
+        {/* Header */}
+        <div className="p-4 h-16 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-red rounded flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
+            <div className="w-8 h-8 bg-sidebar-primary rounded flex items-center justify-center">
+              <span className="text-sidebar-primary-foreground font-bold text-lg">S</span>
             </div>
-            <span className="text-brand-light font-custom text-lg tracking-wider">Code Sense</span>
+            <span className="text-sidebar-foreground font-custom text-lg tracking-wider">Code Sense</span>
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-brand-light/60 text-sm"><DotsLoader /></div>
+          <DotsLoader />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-64 h-screen bg-brand-dark flex flex-col">
+    <div className="w-64 h-screen bg-sidebar flex flex-col">
       {/* Header */}
-      <div className="p-4 h-16 border-b border-brand-light/20">
+      <div className="p-4 h-16 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-brand-red rounded flex items-center justify-center">
-            <span className="text-white font-bold text-lg">S</span>
+          <div className="w-8 h-8 bg-sidebar-primary rounded flex items-center justify-center">
+            <span className="text-sidebar-primary-foreground font-bold text-lg">S</span>
           </div>
-          <span className="text-brand-light font-custom text-lg tracking-wider">Code Sense</span>
+          <span className="text-sidebar-foreground font-custom text-lg tracking-wider">Code Sense</span>
         </div>
       </div>
 
       {/* Menu Section */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-4">
-          <div className="text-xs uppercase tracking-wider text-brand-light/60 font-medium mb-3">
+          <div className="text-xs uppercase tracking-wider text-accent-foreground/60 font-medium mb-3">
             MENU
           </div>
           <nav className="space-y-1">
             {filteredMenuItems.length > 0 ? (
               filteredMenuItems.map(item => renderMenuItem(item))
             ) : (
-              <div className="text-brand-light/60 text-sm py-4">
+              <div className="text-accent-foreground/60 text-sm py-4">
                 No menu items available
               </div>
             )}
@@ -298,8 +321,8 @@ export default function Sidebar({
 
       {/* User Role Indicator (Optional - for debugging) */}
       {userRole && (
-        <div className="p-4 border-t border-brand-light/20">
-          <div className="text-xs text-brand-light/60">
+        <div className="p-4 border-t border-sidebar-border">
+          <div className="text-xs text-sidebar-foreground/60">
             Role: {userRole.role}
           </div>
         </div>

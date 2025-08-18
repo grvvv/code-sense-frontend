@@ -10,6 +10,7 @@ import {
 } from '@/components/atomic/dropdown-menu';
 import { useAuth } from '@/hooks/use-auth';
 import { useTheme } from '@/contexts/use-theme';
+import { Link } from '@tanstack/react-router';
  
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -31,14 +32,14 @@ export default function Header({
 
 
   return (
-    <header className="h-16 w-full bg-brand-light border-b border-brand-dark/10 flex items-center justify-between px-4 lg:px-6">
+    <header className="h-16 w-full bg-popover border-b flex items-center justify-between px-4 lg:px-6">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         {/* Mobile Menu Toggle */}
         <Button
           variant="ghost"
           size="sm"
-          className="lg:hidden text-brand-dark hover:bg-brand-dark/10"
+          className="lg:hidden text-popover-foreground hover:bg-popover-foreground/10"
           onClick={onMenuToggle}
         >
           <Menu className="w-5 h-5" />
@@ -53,7 +54,7 @@ export default function Header({
         <Button
           variant="ghost"
           size="sm"
-          className="text-brand-dark hover:bg-brand-dark/10"
+          className="text-popover-foreground hover:bg-popover-foreground/10"
           onClick={toggleTheme}
         >
           {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -62,62 +63,63 @@ export default function Header({
         {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 text-brand-dark hover:bg-brand-dark/10">
-              <div className="w-8 h-8 bg-brand-red rounded-full flex items-center justify-center">
+            <Button variant="ghost" className="flex items-center gap-2 py-6 text-popover-foreground hover:bg-popover-foreground/10">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <User className="w-4 h-4 text-white" />
               </div>
               
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-brand-dark capitalize">{user?.name}</p>
-                <p className="text-xs text-brand-dark/60 capitalize">{user?.role}</p>
+                <p className="text-sm font-medium text-popover-foreground capitalize">{user?.name}</p>
+                <p className="text-xs text-popover-foreground/60 capitalize">{user?.role}</p>
               </div>
-              <ChevronDown className="w-4 h-4 text-brand-dark/60" />
+              <ChevronDown className="w-4 h-4 text-popover-foreground/60" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-white border-brand-dark/20">
-            <DropdownMenuLabel className="text-brand-dark">
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-brand-red rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
-                <div>
-                  <p className="text-sm font-medium capitalize">{user?.name}</p>
-                  <p className="text-xs text-brand-dark/60 capitalize">{user?.role}</p>
+                
+                <div className="hidden md:block text-left">
+                  <p className="text-sm font-medium text-popover-foreground capitalize">{user?.name}</p>
+                  <p className="text-xs text-popover-foreground/60 capitalize">{user?.role}</p>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-brand-dark/20" />
+            <DropdownMenuSeparator />
             
             {/* Profile Link */}
-            <DropdownMenuItem className="text-brand-dark hover:bg-brand-dark/10 cursor-pointer p-0">
-              <a 
-                href="/profile" 
+            <DropdownMenuItem className="cursor-pointer p-0">
+              <Link 
+                to="/profile" 
                 className="w-full flex items-center px-2 py-1.5"
                 onClick={onProfileClick}
               >
                 <UserCircle className="w-4 h-4 mr-2" />
                 Profile
-              </a>
+              </Link>
             </DropdownMenuItem>
             
             {/* Settings Link */}
-            <DropdownMenuItem className="text-brand-dark hover:bg-brand-dark/10 cursor-pointer p-0">
-              <a 
-                href="/settings" 
+            <DropdownMenuItem className="cursor-pointer p-0">
+              <Link 
+                to="/settings" 
                 className="w-full flex items-center px-2 py-1.5"
                 onClick={onSettingsClick}
               >
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
-              </a>
+              </Link>
             </DropdownMenuItem>
             
-            <DropdownMenuSeparator className="bg-brand-dark/20" />
+            <DropdownMenuSeparator/>
             <DropdownMenuItem 
-              className="text-brand-red hover:bg-brand-red/10 cursor-pointer"
+              className="text-destructive hover:bg-destructive/10 cursor-pointer"
               onClick={() => logout()}
             >
-              <LogOut className="w-4 h-4 mr-2" />
+              <LogOut className="text-destructive w-4 h-4 mr-2" />
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>

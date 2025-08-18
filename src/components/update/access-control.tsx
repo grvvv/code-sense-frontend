@@ -247,10 +247,10 @@ const AccessControlSystem = () => {
     };
  
     return (
-      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 mt-3">
         <div className="flex items-center gap-2 mb-3">
           <Info className="w-5 h-5 text-blue-600" />
-          <h3 className="font-semibold text-blue-800">Permission Workflow Hierarchy (Based on Diagram)</h3>
+          <h3 className="font-semibold text-blue-800">Permission Workflow Hierarchy</h3>
         </div>
        
         <div className="space-y-4">

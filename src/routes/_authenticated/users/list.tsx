@@ -123,7 +123,7 @@ function RouteComponent() {
       emptyMessage="No users found"
       onRowClick={handleRowClick}
       rowClassName={() => 
-        `hover:bg-gray-50`
+        `hover:bg-gray-50 hover:dark:bg-gray-300/10`
       }
     />
   );

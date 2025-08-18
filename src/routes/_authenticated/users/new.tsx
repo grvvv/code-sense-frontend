@@ -4,6 +4,7 @@ import { Card } from '@/components/atomic/card';
 import { useCreateUser } from '@/hooks/use-user';
 import { Button } from '@/components/atomic/button';
 import { Input } from '@/components/atomic/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atomic/select';
 
 export const Route = createFileRoute('/_authenticated/users/new')({
   component: RouteComponent,
@@ -40,6 +41,16 @@ function RouteComponent() {
     // Clear error on input change
     if (errors[name as keyof FormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  // Handle Select component value change
+  const handleSelectChange = (value: string) => {
+    setForm((prev) => ({ ...prev, role: value as FormData['role'] }));
+    
+    // Clear error on select change
+    if (errors.role) {
+      setErrors((prev) => ({ ...prev, role: undefined }));
     }
   };
 
@@ -108,12 +119,11 @@ function RouteComponent() {
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Create New User</h2>
+            <h2 className="text-2xl font-bold">Create New User</h2>
             <Button
               variant="ghost"
               type="button"
               onClick={() => navigate({ to: '/users/list' })}
-              className="text-gray-600 hover:text-gray-800 text-sm"
             >
               ← Back to Users List
             </Button>
@@ -128,11 +138,11 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={createUserMutation.isPending}
               className={`${
-                errors.company ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.company ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Enter company name"
             />
-            {errors.company && <p className="text-sm text-red-600 mt-1">{errors.company}</p>}
+            {errors.company && <p className="text-sm text-destructive mt-1">{errors.company}</p>}
           </div>
 
           {/* Username */}
@@ -144,11 +154,11 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={createUserMutation.isPending}
               className={`${
-                errors.company ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.name ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Enter username"
             />
-            {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
+            {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
           </div>
 
           {/* Email */}
@@ -161,11 +171,11 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={createUserMutation.isPending}
               className={`${
-                errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.email ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Enter email address"
             />
-            {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
           </div>
 
           {/* Password */}
@@ -178,11 +188,11 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={createUserMutation.isPending}
               className={`${
-                errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.password ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Enter password (min 6 characters)"
             />
-            {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-sm text-destructive mt-1">{errors.password}</p>}
           </div>
 
           {/* Confirm Password */}
@@ -195,55 +205,59 @@ function RouteComponent() {
               onChange={handleChange}
               disabled={createUserMutation.isPending}
               className={`${
-                errors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.confirmPassword ? 'border-destructive bg-destructive/10' : ''
               }`}
               placeholder="Confirm your password"
             />
-            {errors.confirmPassword && <p className="text-sm text-red-600 mt-1">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword}</p>}
           </div>
 
-          {/* Role */}
+          {/* Role - Updated to use Shadcn Select */}
           <div>
             <label className="block text-sm font-medium mb-1">Role</label>
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
+            <Select 
+              value={form.role} 
+              onValueChange={handleSelectChange}
               disabled={createUserMutation.isPending}
-              className={`w-full border rounded p-3 ${errors.role ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
             >
-              <option value="">Select role</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="user">User</option>
-            </select>
-            {errors.role && <p className="text-sm text-red-600 mt-1">{errors.role}</p>}
+              <SelectTrigger className={`${
+                errors.role ? 'border-destructive bg-destructive/10' : ''
+              }`}>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="manager">Manager</SelectItem>
+                <SelectItem value="user">User</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.role && <p className="text-sm text-destructive mt-1">{errors.role}</p>}
           </div>
 
           {/* Error Message */}
           {createUserMutation.error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded">
               Error creating user: {createUserMutation.error.message}
             </div>
           )}
 
           {/* Submit Button */}
-          <div className="flex gap-4">
-            <button
+          <div className="flex gap-2">
+            <Button
               type="submit"
               disabled={createUserMutation.isPending}
-              className="flex-1 bg-red-700 hover:bg-red-800 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded shadow transition-colors"
+              className="flex-1"
             >
               {createUserMutation.isPending ? 'Creating User...' : 'Create User'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => navigate({ to: '/users/list' })}
               disabled={createUserMutation.isPending}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:cursor-not-allowed"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </form>
       </Card>

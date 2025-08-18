@@ -25,7 +25,7 @@ function Index() {
   if (isLoading) return <DotsLoader />
 
   if (isError) {
-    return <Unauthorized variant='minimal' />
+    return <Unauthorized variant='default' />
   }
 
   return (
