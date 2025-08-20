@@ -1,4 +1,3 @@
-import React from 'react'
 import { AlertTriangle, Shield, FileText, Code, Bug, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 
 function Finding() {
@@ -58,7 +57,7 @@ db.query(query, (err, results) => {
   }
 
   return (
-    <div className="p-6 bg-white overflow-auto h-[46rem]">
+    <div className="p-6 bg-white overflow-auto">
       <div className="bg-white rounded-lg shadow-lg border border-gray-200">
         {/* Header */}
         <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 rounded-t-lg">

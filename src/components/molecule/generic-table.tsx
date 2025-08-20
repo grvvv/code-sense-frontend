@@ -248,7 +248,7 @@ export function GenericTable<T extends Record<string, any>>({
         {pagination.enabled && totalPages > 1 && (
           <div className="flex justify-between items-center mt-6 flex-wrap gap-4">
             {pagination.showInfo && (
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-[#e5e5e5]">
                 Showing {start} to {end} of {total} entries
               </p>
             )}
@@ -257,20 +257,9 @@ export function GenericTable<T extends Record<string, any>>({
               <Button
                 onClick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-3 py-2 text-sm font-medium rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
-                style={{ 
-                  borderColor: '#e5e5e5',
-                  color: '#2d2d2d',
-                  backgroundColor: '#ffffff'
-                }}
-                onMouseEnter={(e) => {
-                  if (currentPage !== 1) {
-                    e.currentTarget.style.backgroundColor = '#f8f9fa';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#ffffff';
-                }}
+                className="px-3 py-2 text-sm font-medium rounded-lg border disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors
+                text-[#2d2d2d] dark:text-[#e5e5e5] bg-white dark:bg-[#2d2d2d] border-[#e5e5e5] dark:border-[#444]
+                hover:bg-[#f8f9fa] dark:hover:bg-[#3a3a3a]"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Previous</span>
@@ -284,8 +273,8 @@ export function GenericTable<T extends Record<string, any>>({
                       onClick={() => goToPage(pageNum)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                         currentPage === pageNum
-                          ? 'bg-red-700 text-white'
-                          : 'text-gray-800 bg-white hover:bg-gray-100'
+                          ? 'bg-red-700 text-white border-[#bf0000]'
+                          : 'bg-white text-[#2d2d2d] dark:bg-[#3b3b3b] dark:text-[#e5e5e5] border-[#e5e5e5] dark:border-[#444] hover:bg-[#f8f9fa] dark:hover:bg-[#494949]'
                       }`}
                     >
                       {pageNum}
@@ -297,23 +286,8 @@ export function GenericTable<T extends Record<string, any>>({
               <Button
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
-                style={{ 
-                  backgroundColor: '#bf0000',
-                  color: '#ffffff',
-                  border: '1px solid #bf0000'
-                }}
-                onMouseEnter={(e) => {
-                  if (currentPage !== totalPages) {
-                    e.currentTarget.style.backgroundColor = '#a00000';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (currentPage !== totalPages) {
-                    e.currentTarget.style.backgroundColor = '#bf0000';
-                  }
-                }}
-              >
+                className="px-3 py-2 text-sm font-medium rounded-lg border disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1
+                bg-[#bf0000] text-white border-[#bf0000] hover:bg-[#a00000]">
                 <span>Next</span>
                 <ChevronRight className="w-4 h-4" />
               </Button>

@@ -26,65 +26,66 @@ function RouteComponent() {
   }
   
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Profile</h1>
+    <div className="p-6">
+      <div className="max-w-8xl mx-auto space-y-6">
         
         {/* User Information Card */}
         <Card>
           <CardHeader>
-            <h2 className="text-xl font-semibold mb-6 flex items-center">
-              <div className="w-2 h-2 bg-red-600 rounded-full mr-3"></div>
-              User Information
+            <h2 className="text-2xl font-semibold mb-2 flex items-center">
+              Profile
             </h2>
           </CardHeader>
           
           <CardContent>
+          <div className="space-y-6">
+            {/* Company Name and User Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Company Name</label>
-                <div className="p-3 bg-muted rounded-md border ">
+                <div className="p-3 bg-muted rounded-md border">
                   <span className="text-foreground capitalize">{user?.company}</span>
                 </div>
               </div>
               
               <div>
                 <label className="block text-sm font-medium mb-2">User Name</label>
-                <div className="p-3 bg-muted rounded-md border ">
+                <div className="p-3 bg-muted rounded-md border">
                   <span className="text-foreground capitalize">{user?.name}</span>
                 </div>
               </div>
             </div>
-            
-            <div className="space-y-4">
+
+            {/* Email and Role */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-2">Email</label>
-                <div className="p-3 bg-muted rounded-md border ">
+                <div className="p-3 bg-muted rounded-md border">
                   <span className="text-foreground">{user?.email}</span>
                 </div>
               </div>
               
               <div>
                 <label className="block text-sm font-medium mb-2">Role</label>
-                <div className="p-3 bg-muted rounded-md border ">
+                <div className="p-3 bg-muted rounded-md border">
                   <span className="text-foreground capitalize">{user?.role}</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Created At and Last Updated */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-2">Created At</label>
-                <div className="p-3 bg-muted rounded-md border ">
+                <div className="p-3 bg-muted rounded-md border">
                   <span className="text-foreground">{formatTimestamp(user?.created_at)}</span>
                 </div>
               </div>
               
               <div>
                 <label className="block text-sm font-medium mb-2">Last Updated</label>
-                <div className="p-3 bg-muted rounded-md border ">
-                  <span className="text-foreground capitalize">{formatTimestamp(user?.updated_at)}</span>
+                <div className="p-3 bg-muted rounded-md border">
+                  <span className="text-foreground">{formatTimestamp(user?.updated_at)}</span>
                 </div>
               </div>
             </div>

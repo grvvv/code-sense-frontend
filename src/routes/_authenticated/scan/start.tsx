@@ -135,7 +135,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-8xl mx-auto">
       <Card className="bg-white dark:bg-[#2d2d2d] text-[#2d2d2d] dark:text-[#e5e5e5] shadow-lg rounded-lg">
         <CardHeader>
           <CardTitle className='text-2xl'>Start Scan</CardTitle>

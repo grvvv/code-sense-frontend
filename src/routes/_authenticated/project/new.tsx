@@ -72,7 +72,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-8xl mx-auto">
       <Card>
         <CardHeader>
           <CardTitle className='text-2xl'>Create Project</CardTitle>
@@ -87,7 +87,7 @@ function RouteComponent() {
               value={formData.name}
               onChange={handleInputChange}
               className={`${
-                errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.name ? 'border-destructive bg-destructive/10': ''
               }`}
               placeholder="Enter project name"
             />
@@ -103,7 +103,7 @@ function RouteComponent() {
               onChange={handleInputChange}
               placeholder="Enter Preset"
               className={`${
-                errors.preset ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.preset ? 'border-destructive bg-destructive/10': ''
               }`}
             />
             {errors.preset && <p className="text-sm text-red-600 mt-1">{errors.preset}</p>}
@@ -117,7 +117,7 @@ function RouteComponent() {
               value={formData.description}
               onChange={handleInputChange}
               className={`${
-                errors.description ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                errors.description ? 'border-destructive bg-destructive/10': ''
               }`}              
               placeholder="Enter project description"
             />

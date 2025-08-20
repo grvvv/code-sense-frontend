@@ -50,11 +50,11 @@
   /* #bf0000 - Red */
   
   --radius: 0.625rem;
-  --background: oklch(1 0 0); /* White #ffffff */
+  --background: #F0F0F0; /* White #ffffff */
   --foreground: oklch(0.225 0 0); /* Dark Gray #2d2d2d */
   --card: oklch(1 0 0); /* White #ffffff */
   --card-foreground: oklch(0.225 0 0); /* Dark Gray #2d2d2d */
-  --popover: oklch(1 0 0); /* White #ffffff */
+  --popover: #dedede; /* White #ffffff */
   --popover-foreground: oklch(0.225 0 0); /* Dark Gray #2d2d2d */
   --primary: oklch(0.385 0.245 27.325); /* Red #bf0000 */
   --primary-foreground: oklch(1 0 0); /* White #ffffff */
@@ -73,7 +73,7 @@
   --chart-3: oklch(0.398 0.07 227.392); /* Purple variation */
   --chart-4: oklch(0.828 0.189 84.429); /* Green variation */
   --chart-5: oklch(0.769 0.188 70.08); /* Orange variation */
-  --sidebar: oklch(0.95 0 0); /* Slightly off-white */
+  --sidebar: #dedede; /* Slightly off-white */
   --sidebar-foreground: oklch(0.225 0 0); /* Dark Gray #2d2d2d */
   --sidebar-primary: oklch(0.385 0.245 27.325); /* Red #bf0000 */
   --sidebar-primary-foreground: oklch(1 0 0); /* White #ffffff */
@@ -85,7 +85,7 @@
 
 .dark {
   /* Dark mode using inverted color scheme */
-  --background: oklch(0.3 0 0); /* Dark Gray #2d2d2d */
+  --background: #595959; /* Dark Gray #2d2d2d */
   --foreground: oklch(0.9 0 0); /* Light Gray #e5e5e5 */
   --card: oklch(0.3 0 0); /* Slightly lighter than background */
   --card-foreground: oklch(0.9 0 0); /* Light Gray #e5e5e5 */
@@ -108,7 +108,7 @@
   --chart-3: oklch(0.769 0.188 70.08); /* Adjusted orange */
   --chart-4: oklch(0.627 0.265 303.9); /* Adjusted purple */
   --chart-5: oklch(0.645 0.246 16.439); /* Adjusted red-orange */
-  --sidebar: oklch(0.225 0 0); /* Slightly lighter than background */
+  --sidebar: #2d2d2d; /* Slightly lighter than background */
   --sidebar-foreground: oklch(0.9 0 0); /* Light Gray #e5e5e5 */
   --sidebar-primary: oklch(0.45 0.28 27.325); /* Brighter Red for dark mode */
   --sidebar-primary-foreground: oklch(1 0 0); /* White #ffffff */

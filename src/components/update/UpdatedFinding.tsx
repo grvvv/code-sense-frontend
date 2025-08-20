@@ -1,5 +1,6 @@
 import type { FindingDetails } from '@/types/finding';
 import { AlertTriangle, Shield, FileText, Code, Bug, CheckCircle, XCircle, AlertCircle, Clock, ExternalLink } from 'lucide-react'
+import { Card } from '../atomic/card';
 
 interface FindingProps {
   finding?: FindingDetails;
@@ -18,7 +19,7 @@ function Finding({ finding }: FindingProps) {
     title: "Path Traversal",
     description: "This proof of concept demonstrates how path traversal can occur. The vulnerability allows an attacker to access files outside the intended directory, potentially leading to sensitive data disclosure or modification.",
     severity: "medium",
-    filepath: "",
+    file_path: "index.html",
     code_snip: "```py\ncv = Converter(pdf_file)  # Convert the PDF to DOCX\ncv.convert(docx_file, start=0, end=None)  # Convert all pages\n```",
     security_risk: "The vulnerability allows an attacker to access files outside the intended directory, potentially leading to sensitive data disclosure or modification.",
     mitigation: "Use the `os.path.join()` function to concatenate paths and avoid using string manipulation to construct file paths. Additionally, ensure that all user-supplied input is properly sanitized and validated before being used in a file path.",
@@ -97,14 +98,14 @@ function Finding({ finding }: FindingProps) {
   }
 
   return (
-    <div className="p-6 bg-white overflow-auto h-[46rem]">
-      <div className="bg-white rounded-lg shadow-lg border border-gray-200">
+    <Card className="overflow-auto p-0">
+      <div className="rounded-lg shadow-lg border">
         {/* Header */}
-        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 rounded-t-lg">
+        <div className="px-6 py-4 border-b border-gray-200 rounded-t-lg">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <Bug className="w-6 h-6 text-red-500" />
-              Security Finding Details
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Bug className="w-6 h-6 text-primary" />
+              {currentFinding.title}
             </h1>
             <div className="flex items-center gap-3">
               <span className={`flex px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(currentFinding.status)}`}>
@@ -126,11 +127,7 @@ function Finding({ finding }: FindingProps) {
           {/* Finding Title and Metadata */}  
           <div className="flex justify-between items-start">
             <div className='flex gap-3 flex-1'>
-              <AlertTriangle className="w-6 h-6 text-orange-500 mt-1 flex-shrink-0" />
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  {currentFinding.title}
-                </h2>
+              <div className="flex-1">  
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <span className="bg-gray-100 px-2 py-1 rounded">
                     Finding Code: {currentFinding.code}
@@ -141,7 +138,7 @@ function Finding({ finding }: FindingProps) {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col items-end gap-2">
+            <div className="flex items-end gap-2">
               <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getSeverityColor(currentFinding.severity)}`}>
                 {currentFinding.severity.toUpperCase()} Severity
               </span>
@@ -152,49 +149,49 @@ function Finding({ finding }: FindingProps) {
           </div>
 
           {/* CVSS Vector */}
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Shield className="w-5 h-5 text-blue-600" />
+          <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+              <Shield className="w-5 h-5 text-primary" />
               CVSS Vector
             </h3>
-            <code className="text-blue-800 bg-blue-100 px-2 py-1 rounded text-sm">
+            <code className="text-primary bg-gray-300 dark:bg-gray-900/50 px-2 py-1 rounded text-sm">
               {currentFinding.cvss_vector}
             </code>
           </div>
 
           {/* Description */}
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-blue-600" />
+          <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+              <FileText className="w-5 h-5 text-primary" />
               Description
             </h3>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="leading-relaxed text-gray-700 dark:text-gray-300">
               {currentFinding.description}
             </p>
           </div>
 
           {/* File Information */}
-          {currentFinding.filepath && (
-            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-purple-600" />
+          {currentFinding.file_path && (
+            <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+                <FileText className="w-5 h-5 text-primary" />
                 Affected File
               </h3>
-              <code className="text-purple-800 bg-purple-100 px-2 py-1 rounded text-sm">
-                {currentFinding.filepath}
+              <code className="text-primary bg-gray-300 dark:bg-gray-900/50 px-2 py-1 rounded text-sm">
+                {currentFinding.file_path}
               </code>
             </div>
           )}
 
           {/* Vulnerable Code */}
           {currentFinding.code_snip && (
-            <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Code className="w-5 h-5 text-red-600" />
+            <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+                <Code className="w-5 h-5 text-primary" />
                 Code Snippet
               </h3>
               <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
-                <pre className="text-sm text-green-400 font-mono whitespace-pre-wrap">
+                <pre className="text-sm text-green-400 dark:text-green-300 font-mono whitespace-pre-wrap">
                   <code>{formatCodeSnippet(currentFinding.code_snip)}</code>
                 </pre>
               </div>
@@ -203,23 +200,23 @@ function Finding({ finding }: FindingProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2 mb-6">
             {/* Security Risk */}
-            <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-yellow-600" />
+            <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+                <AlertTriangle className="w-5 h-5 text-primary" />
                 Security Risk
               </h3>
-              <div className="text-gray-700 space-y-2">
+              <div className="space-y-2 text-gray-700 dark:text-gray-300">
                 {formatMitigation(currentFinding.security_risk)}
               </div>
             </div>
 
             {/* Mitigation */}
-            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-green-600" />
+            <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+                <Shield className="w-5 h-5 text-primary" />
                 Mitigation Steps
               </h3>
-              <div className="text-gray-700 space-y-2">
+              <div className="space-y-2 text-gray-700 dark:text-gray-300">
                 {formatMitigation(currentFinding.mitigation)}
               </div>
             </div>
@@ -227,16 +224,16 @@ function Finding({ finding }: FindingProps) {
 
           {/* Reference Link */}
           {currentFinding.reference && (
-            <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <ExternalLink className="w-5 h-5 text-indigo-600" />
+            <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+                <ExternalLink className="w-5 h-5 text-primary" />
                 Reference
               </h3>
               <a 
                 href={currentFinding.reference}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-indigo-600 hover:text-indigo-800 underline flex items-center gap-1"
+                className="text-red-600 hover:text-red-800 underline flex items-center gap-1"
               >
                 {currentFinding.reference}
                 <ExternalLink className="w-4 h-4" />
@@ -247,12 +244,12 @@ function Finding({ finding }: FindingProps) {
           {/* Metadata */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Creation Date */}
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-gray-600" />
+            <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">
+                <Clock className="w-5 h-5 text-primary" />
                 Created
               </h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 {new Date(currentFinding.created_at).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -264,23 +261,23 @@ function Finding({ finding }: FindingProps) {
             </div>
 
             {/* Additional Metadata */}
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Metadata</h3>
+            <div className="bg-gray-500/10 dark:bg-gray-500/20 rounded-lg p-4 border border-gray-200 dark:border-gray-500/40">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-[#e5e5e5]">Metadata</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Finding ID:</span>
-                  <span className="text-gray-900 font-mono">{currentFinding.id}</span>
+                  <span className="text-gray-600 dark:text-gray-300">Finding ID:</span>
+                  <span className="text-gray-900 dark:text-gray-200 font-mono">{currentFinding.id}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Scan ID:</span>
-                  <span className="text-gray-900 font-mono">{currentFinding.scan_id}</span>
+                  <span className="text-gray-600 dark:text-gray-300">Scan ID:</span>
+                  <span className="text-gray-900 dark:text-gray-200 font-mono">{currentFinding.scan_id}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Created By:</span>
-                  <span className="text-gray-900 font-mono">{currentFinding.created_by}</span>
+                  <span className="text-gray-600 dark:text-gray-300">Created By:</span>
+                  <span className="text-gray-900 dark:text-gray-200 font-mono">{currentFinding.created_by}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Deleted:</span>
+                  <span className="text-gray-600 dark:text-gray-300">Deleted:</span>
                   <span className={`${currentFinding.deleted ? 'text-red-600' : 'text-green-600'}`}>
                     {currentFinding.deleted ? 'Yes' : 'No'}
                   </span>
@@ -290,7 +287,7 @@ function Finding({ finding }: FindingProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   )
 }
 

@@ -85,7 +85,7 @@ function RouteComponent() {
 
   if (isLoading) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 max-w-8xl mx-auto">
         <DotsLoader />
       </div>
     );
@@ -93,7 +93,7 @@ function RouteComponent() {
 
   if (error || !project) {
     return (
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="p-6 max-w-8xl mx-auto">
         <Card>
           <CardHeader>
             <CardTitle className='text-2xl text-red-600'>Error</CardTitle>
@@ -115,7 +115,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-8xl mx-auto">
       <Card>
         <CardHeader>
           <CardTitle className='text-2xl'>Edit Project</CardTitle>

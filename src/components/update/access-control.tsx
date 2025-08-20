@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { User, Shield, Save, RefreshCw, Check, X, Eye, AlertCircle, ArrowRight, Info } from 'lucide-react';
 import { usePermissions, useUpdatePermissions } from '@/hooks/use-auth';
 import type { AllPermissions, PermissionRole } from '@/types/auth';
+import { Card } from '../atomic/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../atomic/select';
+import { Button } from '../atomic/button';
  
 const AccessControlSystem = () => {
   const [selectedRole, setSelectedRole] = useState<PermissionRole>('user');
@@ -209,9 +212,9 @@ const AccessControlSystem = () => {
             enabled
               ? 'bg-red-600 focus:ring-red-500'
               : 'focus:ring-gray-400'
-          } ${isIndirectlyControlled ? 'ring-2 ring-yellow-400' : ''}`}
+          } ${isIndirectlyControlled ? 'ring-2 ring-red-600/10' : ''}`}
           style={{
-            backgroundColor: enabled ? '#BF0000' : '#2d2d2d'
+            backgroundColor: enabled ? '#BF0000' : '#595959'
           }}
         >
           <span
@@ -221,7 +224,7 @@ const AccessControlSystem = () => {
           />
         </button>
         {isIndirectlyControlled && (
-          <span className="text-xs text-yellow-600 mt-1">
+          <span className="text-xs text-red-600 mt-1">
             {status.hasUnmetPrerequisites ? 'Needs prereqs' : 'Has dependents'}
           </span>
         )}
@@ -247,16 +250,16 @@ const AccessControlSystem = () => {
     };
  
     return (
-      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 mt-3">
+      <div className="mb-6 bg-red-500/10 border border-red-200 dark:border-red-600 rounded-lg p-4 mt-3">
         <div className="flex items-center gap-2 mb-3">
-          <Info className="w-5 h-5 text-blue-600" />
-          <h3 className="font-semibold text-blue-800">Permission Workflow Hierarchy</h3>
+          <Info className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold text-primary">Permission Workflow Hierarchy</h3>
         </div>
        
         <div className="space-y-4">
           {Object.entries(permissionsByLevel).map(([level, permissions]) => (
             <div key={level} className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-sm">
+              <div className="w-8 h-8 bg-red-300/10 rounded-full flex items-center justify-center text-primary font-bold text-sm">
                 {level}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -265,8 +268,8 @@ const AccessControlSystem = () => {
                     key={permission}
                     className={`px-3 py-1 rounded-full text-xs font-medium border-2 ${
                       localPermissions[permission]
-                        ? 'bg-green-100 text-green-800 border-green-300'
-                        : 'bg-gray-100 text-gray-600 border-gray-300'
+                        ? 'bg-red-300 text-red-600 border-red-400 dark:bg-red-700/10 dark:border-red-900'
+                        : 'bg-red-100 text-red-600 border-red-400 dark:bg-red-300/10 dark:border-red-600'
                     }`}
                   >
                     {formatPermissionName(permission)}
@@ -277,9 +280,9 @@ const AccessControlSystem = () => {
           ))}
         </div>
  
-        <div className="mt-4 p-3 bg-blue-100 rounded-md">
-          <h4 className="font-semibold text-blue-800 text-sm mb-2">Key Relationships:</h4>
-          <ul className="text-xs text-blue-700 space-y-1">
+        <div className="mt-4 p-3 bg-red-400/10 rounded-md">
+          <h4 className="font-semibold text-primary text-sm mb-2">Key Relationships:</h4>
+          <ul className="text-xs space-y-1">
             <li>• <strong>View Project</strong> is the foundation - required for all other permissions</li>
             <li>• <strong>Create Project</strong> enables Update/Delete Project actions</li>
             <li>• <strong>View Scan</strong> branches from View Project, enables scan operations</li>
@@ -289,7 +292,7 @@ const AccessControlSystem = () => {
           </ul>
         </div>
  
-        <p className="text-xs text-blue-600 mt-3">
+        <p className="text-xs text-primary mt-3">
           This hierarchy ensures logical workflow progression: Projects → Scans → Findings → Reports
         </p>
       </div>
@@ -297,8 +300,8 @@ const AccessControlSystem = () => {
   };
  
   return (
-    <div className="max-w-7xl mx-auto p-6 min-h-screen">
-      <div className="bg-white rounded-lg shadow-lg">
+    <div className="max-w-8xl mx-auto p-6 min-h-screen">
+      <Card className="rounded-lg shadow-lg p-0">
         {/* Header */}
         <div className="text-white p-6 rounded-t-lg" style={{ background: 'linear-gradient(135deg, #bf0000 0%, #8b0000 100%)' }}>
           <div className="flex items-center gap-3">
@@ -314,45 +317,31 @@ const AccessControlSystem = () => {
         <div className="p-6" style={{ borderBottom: '1px solid #e5e5e5' }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <User className="w-5 h-5" style={{ color: '#2d2d2d' }} />
-              <label className="text-sm font-medium" style={{ color: '#2d2d2d' }}>Select Role:</label>
-              <select
-                value={selectedRole}
-                onChange={(e) => setSelectedRole(e.target.value)}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
-                style={{
-                  borderColor: '#e5e5e5',
-                  backgroundColor: '#ffffff',
-                  color: '#2d2d2d',
-                  focusRingColor: '#bf0000'
-                }}
-              >
+              <User className="w-5 h-5" />
+              <label className="text-sm font-medium">Select Role:</label>
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+              <SelectTrigger className="w-48 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600">
+                <SelectValue placeholder="Select a role" />
+              </SelectTrigger>
+              <SelectContent>
                 {roles.map(role => (
-                  <option key={role} value={role}>
+                  <SelectItem key={role} value={role}>
                     {role.charAt(0).toUpperCase() + role.slice(1)}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
-              <button
+              </SelectContent>
+            </Select>
+              <Button
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className="ml-2 px-3 py-2 rounded-md hover:opacity-80 disabled:opacity-50 flex items-center gap-2 transition-opacity"
-                style={{
-                  backgroundColor: '#e5e5e5',
-                  color: '#2d2d2d'
-                }}
-              >
+                className="ml-2 px-3 py-2 rounded-md hover:opacity-80 disabled:opacity-50 flex items-center gap-2 transition-opacity">
                 <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 Refresh
-              </button>
+              </Button>
             </div>
             <button
               onClick={() => setShowHierarchyInfo(!showHierarchyInfo)}
-              className="px-3 py-2 rounded-md flex items-center gap-2 transition-colors"
-              style={{
-                backgroundColor: '#e3f2fd',
-                color: '#1565c0'
-              }}
+              className="px-3 py-2 rounded-md flex items-center gap-2 transition-colors text-red-600 bg-red-400/10"
             >
               <Info className="w-4 h-4" />
               {showHierarchyInfo ? 'Hide' : 'Show'} Hierarchy
@@ -371,9 +360,9 @@ const AccessControlSystem = () => {
         {message && (
           <div className={`mx-6 mt-4 p-3 rounded-md border flex items-center gap-2`}
                style={{
-                 backgroundColor: messageType === 'success' ? '#dcfce7' : messageType === 'info' ? '#e0f2fe' : '#fef2f2',
-                 color: messageType === 'success' ? '#166534' : messageType === 'info' ? '#0277bd' : '#991b1b',
-                 borderColor: messageType === 'success' ? '#bbf7d0' : messageType === 'info' ? '#b3e5fc' : '#fecaca'
+                 backgroundColor: messageType === 'success' ? '#dcfce7' : messageType === 'info' ? '#fef2f2' : '#fef2f2',
+                 color: messageType === 'success' ? '#166534' : messageType === 'info' ? '#991b1b' : '#991b1b',
+                 borderColor: messageType === 'success' ? '#bbf7d0' : messageType === 'info' ? '#fecaca' : '#fecaca'
                }}>
             {messageType === 'error' && <AlertCircle className="w-4 h-4" />}
             {messageType === 'success' && <Check className="w-4 h-4" />}
@@ -405,8 +394,8 @@ const AccessControlSystem = () => {
           ) : (
             <div className="space-y-6">
               {Object.entries(permissionCategories).map(([category, categoryPermissions]) => (
-                <div key={category} className="rounded-lg p-4" style={{ backgroundColor: '#e5e5e5' }}>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#2d2d2d' }}>
+                <div key={category} className="rounded-lg p-4 bg-[#e5e5e5] dark:bg-[#595959]" >
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#bf0000' }}></div>
                     {category}
                   </h3>
@@ -414,24 +403,23 @@ const AccessControlSystem = () => {
                     {categoryPermissions.map(permission => {
                       const status = getPermissionStatus(permission);
                       return (
-                        <div key={permission} className="bg-white p-4 rounded-md border hover:shadow-md transition-shadow"
-                             style={{ borderColor: '#e5e5e5' }}>
+                        <div key={permission} className="bg-white dark:bg-[#424242] p-4 rounded-md hover:shadow-md transition-shadow">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 flex-1">
-                              <div style={{ color: localPermissions[permission] ? '#BF0000' : '#2d2d2d' }}>
+                              <div style={{ color: localPermissions[permission] ? '#BF0000' : '#1a1a1a' }}>
                                 {getPermissionIcon(permission)}
                               </div>
                               <div className="flex-1">
-                                <label className="text-sm font-medium block cursor-pointer" style={{ color: '#2d2d2d' }}>
+                                <label className="text-sm font-medium block cursor-pointer">
                                   {formatPermissionName(permission)}
                                 </label>
                                 <span className="text-xs" style={{
-                                  color: localPermissions[permission] ? '#BF0000' : '#6b7280'
+                                  color: localPermissions[permission] ? '#BF0000' : '#1a1a1a'
                                 }}>
                                   {localPermissions[permission] ? 'Allowed' : 'Denied'}
                                 </span>
                                 {status.prerequisites.length > 0 && (
-                                  <div className="text-xs text-gray-500 mt-1">
+                                  <div className="text-xs text-[#1a1a1a] mt-1">
                                     Requires: {status.prerequisites.length} prerequisite(s)
                                   </div>
                                 )}
@@ -455,9 +443,9 @@ const AccessControlSystem = () => {
         </div>
  
         {/* Action Buttons */}
-        <div className="px-6 py-4 rounded-b-lg border-t" style={{ backgroundColor: '#e5e5e5', borderColor: '#e5e5e5' }}>
+        <div className="px-6 py-4 rounded-b-lg border-t bg-[#e5e5e5] dark:bg-[#595959]">
           <div className="flex justify-between items-center">
-            <div className="text-sm" style={{ color: '#2d2d2d' }}>
+            <div className="text-sm">
               Role: <span className="font-medium">{selectedRole}</span> |
               Permissions: <span className="font-medium">{Object.keys(localPermissions).length}</span> |
               Allowed: <span className="font-medium text-red-600">
@@ -479,13 +467,13 @@ const AccessControlSystem = () => {
             </button>
           </div>
         </div>
-      </div>
+      </Card>
  
       {/* Permission Summary */}
-      <div className="mt-6 bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold mb-4" style={{ color: '#2d2d2d' }}>Current Configuration</h3>
-        <div className="p-4 rounded-md" style={{ backgroundColor: '#e5e5e5' }}>
-          <pre className="text-sm whitespace-pre-wrap" style={{ color: '#2d2d2d' }}>
+      <Card className="mt-6 rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold mb-2">Current Configuration</h3>
+        <div className="p-4 rounded-md bg-[#e5e5e5] dark:bg-[#595959]">
+          <pre className="text-sm whitespace-pre-wrap">
             {JSON.stringify({
               role: selectedRole,
               permissions: localPermissions,
@@ -504,7 +492,7 @@ const AccessControlSystem = () => {
             }, null, 2)}
           </pre>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronRight, BarChart3, Users, PenTool, Layout, Gauge, Send, SearchCode, Cog, UserCircle2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Users, SearchCode, Cog, UserCircle2, LayoutDashboard, FolderOpen, FilePlus2, FileText, UserCog, UserPlus } from 'lucide-react';
 import { Badge } from '@/components/atomic/badge';
 import { Button } from '@/components/atomic/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/atomic/collapsible';
@@ -35,28 +35,28 @@ const defaultMenuItems: MenuItem[] = [
   {
     id: 'dashboard',
     title: 'Dashboard',
-    icon: <Gauge className="w-4 h-4" />,
+    icon: <LayoutDashboard className="w-4 h-4" />,
     href: '/',
     alwaysVisible: true // Dashboard should always be visible
   },
   {
     id: 'projects',
     title: 'Projects',
-    icon: <PenTool className="w-4 h-4" />,
+    icon: <FolderOpen className="w-4 h-4" />,
     requiredPermissions: ['view_projects', 'create_project', 'view_findings', 'view_scans'],
     requireAll: false, // Show if user has any project permission
     children: [
       { 
         id: 'new-project', 
         title: 'Create Project', 
-        icon: <Send className="w-4 h-4" />, 
+        icon: <FilePlus2 className="w-4 h-4" />, 
         href: '/project/new',
         requiredPermissions: ['create_project']
       },
       { 
         id: 'project-list', 
         title: 'Project List', 
-        icon: <Users className="w-4 h-4" />, 
+        icon: <FileText className="w-4 h-4" />, 
         href: '/project/list',
         requiredPermissions: ['view_projects']
       },
@@ -72,14 +72,14 @@ const defaultMenuItems: MenuItem[] = [
   {
     id: 'users',
     title: 'Users',
-    icon: <Layout className="w-4 h-4" />,
+    icon: <UserCog className="w-4 h-4" />,
     badge: { text: 'Admin', variant: 'hot' },
     requiredPermissions: ['create_project'], 
     children: [
       { 
         id: 'new-user', 
         title: 'Create User', 
-        icon: <BarChart3 className="w-4 h-4" />, 
+        icon: <UserPlus className="w-4 h-4" />, 
         href: '/users/new',
         requiredPermissions: ['create_project']
       },
@@ -276,8 +276,8 @@ export default function Sidebar({
         {/* Header */}
         <div className="p-4 h-16 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-sidebar-primary rounded flex items-center justify-center">
-              <span className="text-sidebar-primary-foreground font-bold text-lg">S</span>
+            <div className="w-9 h-9">
+              <img src="/CSlogo.png" alt="Logo" className="" />
             </div>
             <span className="text-sidebar-foreground font-custom text-lg tracking-wider">Code Sense</span>
           </div>
@@ -294,8 +294,8 @@ export default function Sidebar({
       {/* Header */}
       <div className="p-4 h-16 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-sidebar-primary rounded flex items-center justify-center">
-            <span className="text-sidebar-primary-foreground font-bold text-lg">S</span>
+          <div className="w-9 h-9">
+            <img src="/CSlogo.png" alt="Logo" className="" />
           </div>
           <span className="text-sidebar-foreground font-custom text-lg tracking-wider">Code Sense</span>
         </div>

@@ -9,7 +9,7 @@ export interface FindingDetails {
   title: string;
   description: string;
   severity: 'critical' | 'high' | 'medium' | 'low' | 'info';
-  filepath: string;
+  file_path: string;
   code_snip: string;
   security_risk: string;
   mitigation: string;
@@ -30,7 +30,7 @@ export interface CreateFindingDetails {
   title: string;
   description: string;
   severity: 'critical' | 'high' | 'medium' | 'low' | 'info';
-  filepath?: string;
+  file_path?: string;
   code_snip?: string;
   security_risk: string;
   mitigation: string;
@@ -46,7 +46,7 @@ export interface UpdateFindingDetails {
   title?: string;
   description?: string;
   severity?: 'critical' | 'high' | 'medium' | 'low' | 'info';
-  filepath?: string;
+  file_path?: string;
   code_snip?: string;
   security_risk?: string;
   mitigation?: string;
