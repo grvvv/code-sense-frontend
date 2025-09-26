@@ -22,6 +22,7 @@ interface MenuItem {
   href?: string;
   requiredPermissions?: (keyof AllPermissions)[];
   requireAll?: boolean;
+  requiredRoles?: string[];     
   alwaysVisible?: boolean; // For items like dashboard, profile, settings
 }
 
@@ -73,22 +74,21 @@ const defaultMenuItems: MenuItem[] = [
     id: 'users',
     title: 'Users',
     icon: <UserCog className="w-4 h-4" />,
-    badge: { text: 'Admin', variant: 'hot' },
-    requiredPermissions: ['create_project'], 
+    requiredRoles: ['admin', 'manager'], 
     children: [
       { 
         id: 'new-user', 
         title: 'Create User', 
         icon: <UserPlus className="w-4 h-4" />, 
         href: '/users/new',
-        requiredPermissions: ['create_project']
+        requiredRoles: ['admin', 'manager'],
       },
       { 
         id: 'user-list', 
         title: 'Users List', 
         icon: <Users className="w-4 h-4" />, 
         href: '/users/list',
-        requiredPermissions: ['view_projects']
+        requiredRoles: ['admin', 'manager'],
       }
     ]
   },
@@ -145,6 +145,12 @@ export default function Sidebar({
       return items.filter(item => {
         // Always show items marked as alwaysVisible
         if (item.alwaysVisible) return true;
+
+        if (item.requiredRoles && item.requiredRoles.length > 0) {
+          if (!item.requiredRoles.includes(userRole.role)) {
+            return false;
+          }
+        }
 
         // If no permissions required, show the item
         if (!item.requiredPermissions || item.requiredPermissions.length === 0) {
@@ -319,14 +325,6 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* User Role Indicator (Optional - for debugging) */}
-      {userRole && (
-        <div className="p-4 border-t border-sidebar-border">
-          <div className="text-xs text-sidebar-foreground/60">
-            Role: {userRole.role}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { User, Shield, Save, RefreshCw, Check, X, Eye, AlertCircle, ArrowRight, Info } from 'lucide-react';
+import { User, Shield, Save, RefreshCw, Check, X, Eye, AlertCircle, Info } from 'lucide-react';
 import { usePermissions, useUpdatePermissions } from '@/hooks/use-auth';
 import type { AllPermissions, PermissionRole } from '@/types/auth';
 import { Card } from '../atomic/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../atomic/select';
 import { Button } from '../atomic/button';
+import { toast } from 'sonner';
  
 const AccessControlSystem = () => {
   const [selectedRole, setSelectedRole] = useState<PermissionRole>('user');
@@ -149,15 +150,30 @@ const AccessControlSystem = () => {
     }
   };
  
-  const handleUpdatePermissions = () => {
-    updatePermissionsMutation.mutateAsync({
-      role: selectedRole,
-      permissions: localPermissions
-    });
+  const handleUpdatePermissions = async () => {
+    try {
+      await updatePermissionsMutation.mutateAsync({
+        role: selectedRole,
+        permissions: localPermissions
+      });
+    } catch (error) {
+      toast("Unauthorized Access", {
+        description: "You don't have privileges to perform this action"
+      })
+    }
+    
+
   };
  
   const handleRefresh = () => {
-    refetch();
+    try {
+      refetch();
+    } catch (error) {
+      toast("Network Error", {
+        description: "Unable to connect to a server"
+      })
+    }
+    
   };
  
   const roles = ['manager', 'user'];

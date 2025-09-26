@@ -5,6 +5,8 @@ import { useCreateUser } from '@/hooks/use-user';
 import { Button } from '@/components/atomic/button';
 import { Input } from '@/components/atomic/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atomic/select';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 export const Route = createFileRoute('/_authenticated/users/new')({
   component: RouteComponent,
@@ -16,7 +18,7 @@ interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-  role: 'admin' | 'manager' | 'user' | '';
+  role: 'manager' | 'user' | '';
 }
 
 function RouteComponent() {
@@ -66,8 +68,8 @@ function RouteComponent() {
     }
     if (!form.password.trim()) {
       newErrors.password = 'Password is required';
-    } else if (form.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters long';
+    } else if (form.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long';
     }
     if (!form.confirmPassword.trim()) {
       newErrors.confirmPassword = 'Confirm password is required';
@@ -91,7 +93,7 @@ function RouteComponent() {
         name: form.name,
         email: form.email,
         password: form.password,
-        role: form.role as 'admin'| 'manager' | 'user',
+        role: form.role as 'manager' | 'user',
       };
 
       await createUserMutation.mutateAsync(userData);
@@ -106,11 +108,20 @@ function RouteComponent() {
         role: '',
       });
       
-      // Navigate back to users list or show success message
       navigate({ to: '/users/list' });
-    } catch (error) {
-      console.error('Error creating user:', error);
-      // Handle error - you might want to show a toast notification
+      toast("User Registered", {
+        description: `User (${form.email}) has been added`,
+      });
+    } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        toast("User registration failed", {
+          description: err.response.data.detail,
+        });
+      } else {
+        toast("User registration failed", {
+          description: "An unexpected error occurred",
+        });
+      }
     }
   };
 
@@ -226,20 +237,12 @@ function RouteComponent() {
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
                 <SelectItem value="manager">Manager</SelectItem>
                 <SelectItem value="user">User</SelectItem>
               </SelectContent>
             </Select>
             {errors.role && <p className="text-sm text-destructive mt-1">{errors.role}</p>}
           </div>
-
-          {/* Error Message */}
-          {createUserMutation.error && (
-            <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded">
-              Error creating user: {createUserMutation.error.message}
-            </div>
-          )}
 
           {/* Submit Button */}
           <div className="flex gap-2">

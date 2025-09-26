@@ -1,4 +1,5 @@
 import type { ScanDetails } from '@/types/scan';
+import { formatTimestamp } from '@/utils/timestampFormater';
 import { Clock, FileText, Shield, CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface ScanUpdateProps {
@@ -85,16 +86,6 @@ function ScanUpdate({ scan }: ScanUpdateProps) {
   const strokeDasharray = circumference;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
-  const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   return (
     <div className="w-full">
       {/* Scan Header */}
@@ -131,7 +122,7 @@ function ScanUpdate({ scan }: ScanUpdateProps) {
           <div className="text-center p-4 bg-gray-50 dark:bg-gray-500/10 rounded-lg">
             <Clock className="w-8 h-8 text-gray-600 dark:text-gray-50 mx-auto mb-2" />
             <div className="text-sm font-medium text-gray-800 dark:text-gray-200">Started</div>
-            <div className="text-xs text-gray-600 dark:text-gray-50">{formatDateTime(currentScan.created_at)}</div>
+            <div className="text-xs text-gray-600 dark:text-gray-50">{formatTimestamp(currentScan.created_at)}</div>
           </div>
         </div>
       </div>
@@ -199,7 +190,7 @@ function ScanUpdate({ scan }: ScanUpdateProps) {
             )}
             {currentScan.status === 'completed' && (
               <p className="text-sm text-green-600 mb-4">
-                Scan completed successfully at {currentScan.end_time ? formatDateTime(currentScan.end_time) : 'Unknown'}
+                Scan completed successfully at {currentScan.end_time ? formatTimestamp(currentScan.end_time) : 'Unknown'}
               </p>
             )}
           </div>

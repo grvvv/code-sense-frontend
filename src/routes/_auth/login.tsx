@@ -4,8 +4,10 @@ import { useAuth } from '@/hooks/use-auth';
 import { authService } from '@/lib/auth';
 import { useForm } from '@tanstack/react-form';
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { AxiosError } from 'axios';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_auth/login')({
   beforeLoad: () => {
@@ -29,6 +31,20 @@ function RouteComponent() {
       login(value);
     },
   });
+
+  useEffect(() => {
+    if (loginError) {
+      if (loginError instanceof AxiosError && loginError.response) {
+        toast("Login Failed", {
+          description: loginError.response.data.detail,
+        });
+      } else {
+        toast("Login Failed", {
+          description: "An unexpected error occurred",
+        });
+      }
+    }
+  }, [loginError, toast]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#2D2D2D' }}>
@@ -140,13 +156,6 @@ function RouteComponent() {
                 </div>
               )}
             />
-
-            {
-              loginError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-                {loginError.message}
-              </div>
-            )}
 
             {/* Submit */}
             <Button

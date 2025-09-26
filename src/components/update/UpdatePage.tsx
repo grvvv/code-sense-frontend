@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '../atomic/card'
 import { ShieldCheck } from "lucide-react";
-import ScanUpdate from './Scanupdate';
+import ScanUpdate from './ScanUpdate';
 
 function UpdatePage() {
   return (

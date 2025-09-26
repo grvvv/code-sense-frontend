@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { formatTimestamp } from '@/utils/timestampFormater';
 import { useDeleteProject, useProjects } from '@/hooks/use-project';
 import type { ProjectDetails } from '@/types/project';
+import { ConfirmDialog } from '@/components/atomic/dialog-confirm';
 
 export const Route = createFileRoute('/_authenticated/project/list')({
   component: RouteComponent,
@@ -66,17 +67,20 @@ function RouteComponent() {
           >
             <Edit className="w-4 h-4" />
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(project);
-            }}
-            className="text-red-600 hover:text-red-700"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          <ConfirmDialog
+            trigger={
+              <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            }
+            title="Delete User"
+            description="This action cannot be undone. This will permanently delete the user
+                  and remove your data from our servers."
+            confirmLabel="Delete"
+            cancelLabel="Cancel"
+            confirmText={project.name}
+            onConfirm={() => handleDelete(project)}
+          />
         </div>
       ),
       width: '150px'

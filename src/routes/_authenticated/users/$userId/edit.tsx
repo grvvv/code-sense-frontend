@@ -17,7 +17,7 @@ interface FormData {
   email: string;
   password?: string;
   confirmPassword?: string;
-  role: 'admin' | 'manager' | 'user' | string;
+  role: 'manager' | 'user' | string;
 }
 
 function RouteComponent() {
@@ -111,7 +111,7 @@ function RouteComponent() {
         email: form.email,
         // Only include password if it's provided and not empty
         ...(form.password && form.password.length > 0 && { password: form.password }),
-        role: form.role as 'admin'| 'manager' | 'user',
+        role: form.role as 'manager' | 'user',
       };
 
       await updateUserMutation.mutateAsync({ userId, data: userData });
@@ -276,7 +276,6 @@ function RouteComponent() {
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
                 <SelectItem value="manager">Manager</SelectItem>
                 <SelectItem value="user">User</SelectItem>
               </SelectContent>

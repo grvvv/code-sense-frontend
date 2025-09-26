@@ -41,7 +41,7 @@ const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-3 min-h-auto">
       {cards.map((card, index) => (
-        <Card className='p-0 transform hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out border-2 border-gray-200 dark:border-[#e5e5e5]/30'>
+        <Card key={index} className='p-0 transform hover:scale-[1.02] hover:-translate-y-1 transition-all duration-300 ease-out border-2 border-gray-200 dark:border-[#e5e5e5]/30'>
         <Link
           to={card.href}
           key={index}
@@ -53,21 +53,21 @@ const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
           `}
         >
           {/* Background decoration */}
-          <div className="absolute inset-0  duration-300" />
+          <div className="absolute inset-0 duration-300" />
           
           {/* Header with icon and action */}
           <div className="flex items-center justify-between mb-4 relative z-10">
             <div className="p-3 rounded-xl bg-gray-100 dark:bg-[#e5e5e5]/10 transition-colors duration-300"
-              style={{ borderLeft: `3px solid ${card.accentColor}`,borderBottom: `3px solid ${card.accentColor}`}}
+              style={{ borderLeft: `3px solid ${card.accentColor}`, borderBottom: `3px solid ${card.accentColor}`}}
             >
               {card.icon}
             </div>
             <span 
-                className="text-2xl font-bold group-hover:scale-110 transition-transform duration-300"
-                style={{ color: card.accentColor }}
-              >
-                {card.count}
-              </span>
+              className="text-2xl font-bold group-hover:scale-110 transition-transform duration-300"
+              style={{ color: card.accentColor }}
+            >
+              {card.count}
+            </span>
           </div>
           
           {/* Content */}
@@ -76,17 +76,17 @@ const DashboardCards = ({ data }: { data: StatCountDetails | undefined }) => {
               {card.title}
             </h2>
             <div className="flex items-center justify-between">
-            <p className="text-sm mb-4  transition-colors duration-300">
+            <p className="text-sm mb-4 transition-colors duration-300">
               {card.description}
             </p>
               
-              {
-                card.href &&
-                <div className="text-xs transition-colors duration-300">
-                  View all
-                </div>
-              }
-              
+            {
+              card.href &&
+              <div className="text-xs transition-colors duration-300">
+                View all
+              </div>
+            }
+            
             </div>
           </div>
           

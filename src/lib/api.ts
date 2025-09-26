@@ -1,12 +1,16 @@
 import axios, { type AxiosInstance, type AxiosResponse, AxiosError } from 'axios';
 
+const ip = window.location.hostname;
+const port = 8585; // adjust if needed
+export const BACKEND_URL = `http://${ip}:${port}`;
+
 // Base API Client with common functionality
 export class BaseApiClient {
   protected axiosInstance: AxiosInstance;
   
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: import.meta.env.VITE_API_BASE_URL,
+      baseURL: BACKEND_URL,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -18,17 +22,6 @@ export class BaseApiClient {
       this.setToken(token);
     }
 
-    // Request interceptor
-    // this.axiosInstance.interceptors.request.use(
-    //   (config) => {
-    //     const token = localStorage.getItem('auth_token');
-    //     if (token) {
-    //       config.headers.Authorization = `Bearer ${token}`;
-    //     }
-    //     return config;
-    //   },
-    //   (error) => Promise.reject(error)
-    // );
     this.axiosInstance.interceptors.request.use(
       (config) => {
         const token = localStorage.getItem('auth_token');
